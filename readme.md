@@ -26,33 +26,33 @@ With over a decade of experience in Business Intelligence and Data Analytics, I 
 - Utilized DAX and Power Query for complex data models.
 - Managed data migration to Snowflake with Power BI integrations.
 
-### 2. Retail Analytics Dashboard for T-Mobile
+### 2. HR Analytics Portal for Labcorp
+**Summary:** Developed a Power BI-driven HR Analytics Portal for Labcorp.
+**Work:** 
+- Led HR data migration from BigQuery to Power BI.
+- Designed Power BI dashboards for HR metrics.
+- Implemented Power BI Row-Level Security for data privacy.
+
+### 3. Retail Analytics Dashboard for T-Mobile
 **Summary:** Developed a Power BI dashboard for T-Mobile's retail analytics.
 **Work:** 
 - Integrated Salesforce CRM and Oracle data into Power BI.
 - Implemented custom visuals and DAX formulas in Power BI dashboards.
 - Automated data synchronization in Power BI.
 
-### 3. Financial Data Warehousing for AT&T
+### 4. Salesforce CRM Analytics for T-Mobile
+**Summary:** Enhanced T-Mobile's Salesforce CRM with Power BI analytics.
+**Work:** 
+- Developed custom Power BI dashboards for CRM analytics.
+- Automated data extraction from Salesforce to Power BI.
+- Leveraged Power BI for interactive and insightful reports.
+
+### 5. Financial Data Warehousing for AT&T
 **Summary:** Managed a BI project for AT&T's financial data warehousing.
 **Work:** 
 - Executed SQL scripts for data extraction into Power BI.
 - Developed financial dashboards/reports in Power BI using DAX.
 - Coordinated ETL for efficient data flow into Power BI.
-
-### 4. Healthcare Data Integration for CVS Pharmacy
-**Summary:** Led a BI project for healthcare data integration at CVS Pharmacy.
-**Work:** 
-- Managed SSIS packages for data integration into Power BI.
-- Created healthcare reports and dashboards in Power BI.
-- Designed Power BI solutions for data reconciliation.
-
-### 5. HR Analytics Portal for Labcorp
-**Summary:** Developed a Power BI-driven HR Analytics Portal for Labcorp.
-**Work:** 
-- Led HR data migration from BigQuery to Power BI.
-- Designed Power BI dashboards for HR metrics.
-- Implemented Power BI Row-Level Security for data privacy.
 
 ### 6. E-Commerce BI Solution for AT&T
 **Summary:** Created a Power BI-centric BI solution for AT&T's e-commerce platform.
@@ -61,12 +61,12 @@ With over a decade of experience in Business Intelligence and Data Analytics, I 
 - Developed Power BI reports and dashboards for e-commerce insights.
 - Ensured data warehouse integration with Power BI.
 
-### 7. Salesforce CRM Analytics for T-Mobile
-**Summary:** Enhanced T-Mobile's Salesforce CRM with Power BI analytics.
+### 7. Healthcare Data Integration for CVS Pharmacy
+**Summary:** Led a BI project for healthcare data integration at CVS Pharmacy.
 **Work:** 
-- Developed custom Power BI dashboards for CRM analytics.
-- Automated data extraction from Salesforce to Power BI.
-- Leveraged Power BI for interactive and insightful reports.
+- Managed SSIS packages for data integration into Power BI.
+- Created healthcare reports and dashboards in Power BI.
+- Designed Power BI solutions for data reconciliation.
 
 ---
 

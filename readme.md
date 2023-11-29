@@ -21,6 +21,7 @@ With over a decade of experience in Business Intelligence and Data Analytics, I 
 
 ### 1. Performance Reporting System for Labcorp
 **Summary:** Spearheaded a BI initiative for Labcorp, Texas, focusing on operational efficiency.
+
 **Work:** 
 - Developed Power BI reports/dashboards, integrating SQL data sources.
 - Utilized DAX and Power Query for complex data models.
@@ -28,6 +29,7 @@ With over a decade of experience in Business Intelligence and Data Analytics, I 
 
 ### 2. HR Analytics Portal for Labcorp
 **Summary:** Developed a Power BI-driven HR Analytics Portal for Labcorp.
+
 **Work:** 
 - Led HR data migration from BigQuery to Power BI.
 - Designed Power BI dashboards for HR metrics.
@@ -35,6 +37,7 @@ With over a decade of experience in Business Intelligence and Data Analytics, I 
 
 ### 3. Retail Analytics Dashboard for T-Mobile
 **Summary:** Developed a Power BI dashboard for T-Mobile's retail analytics.
+
 **Work:** 
 - Integrated Salesforce CRM and Oracle data into Power BI.
 - Implemented custom visuals and DAX formulas in Power BI dashboards.
@@ -42,6 +45,7 @@ With over a decade of experience in Business Intelligence and Data Analytics, I 
 
 ### 4. Salesforce CRM Analytics for T-Mobile
 **Summary:** Enhanced T-Mobile's Salesforce CRM with Power BI analytics.
+
 **Work:** 
 - Developed custom Power BI dashboards for CRM analytics.
 - Automated data extraction from Salesforce to Power BI.
@@ -49,6 +53,7 @@ With over a decade of experience in Business Intelligence and Data Analytics, I 
 
 ### 5. Financial Data Warehousing for AT&T
 **Summary:** Managed a BI project for AT&T's financial data warehousing.
+
 **Work:** 
 - Executed SQL scripts for data extraction into Power BI.
 - Developed financial dashboards/reports in Power BI using DAX.
@@ -56,6 +61,7 @@ With over a decade of experience in Business Intelligence and Data Analytics, I 
 
 ### 6. E-Commerce BI Solution for AT&T
 **Summary:** Created a Power BI-centric BI solution for AT&T's e-commerce platform.
+
 **Work:** 
 - Conducted BI analysis and translated requirements into Power BI solutions.
 - Developed Power BI reports and dashboards for e-commerce insights.
@@ -63,6 +69,7 @@ With over a decade of experience in Business Intelligence and Data Analytics, I 
 
 ### 7. Healthcare Data Integration for CVS Pharmacy
 **Summary:** Led a BI project for healthcare data integration at CVS Pharmacy.
+
 **Work:** 
 - Managed SSIS packages for data integration into Power BI.
 - Created healthcare reports and dashboards in Power BI.

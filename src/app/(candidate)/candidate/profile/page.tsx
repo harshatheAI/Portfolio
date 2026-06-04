@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import {
-  User, MapPin, Briefcase, DollarSign, Globe, Github, Linkedin,
+  User, MapPin, Briefcase, DollarSign, Globe, Link2, Code2,
   Plus, X, Sparkles, Save, CheckCircle2, Loader2, TrendingUp,
   Star, Edit3
 } from "lucide-react";
@@ -241,8 +241,8 @@ export default function CandidateProfilePage() {
           </div>
           <div className="space-y-3">
             {[
-              { icon: <Linkedin className="w-3.5 h-3.5" />, label: "LinkedIn", value: linkedinUrl, set: setLinkedinUrl, placeholder: "https://linkedin.com/in/yourname" },
-              { icon: <Github className="w-3.5 h-3.5" />, label: "GitHub", value: githubUrl, set: setGithubUrl, placeholder: "https://github.com/username" },
+              { icon: <Link2 className="w-3.5 h-3.5" />, label: "LinkedIn", value: linkedinUrl, set: setLinkedinUrl, placeholder: "https://linkedin.com/in/yourname" },
+              { icon: <Code2 className="w-3.5 h-3.5" />, label: "GitHub", value: githubUrl, set: setGithubUrl, placeholder: "https://github.com/username" },
               { icon: <Globe className="w-3.5 h-3.5" />, label: "Portfolio", value: portfolioUrl, set: setPortfolioUrl, placeholder: "https://yoursite.com" },
             ].map(link => (
               <div key={link.label}>
@@ -305,7 +305,7 @@ export default function CandidateProfilePage() {
               <div className="absolute top-full left-0 right-0 mt-1 rounded-xl bg-[#1a1a2e] border border-white/10 shadow-xl z-10 max-h-48 overflow-y-auto">
                 {filteredSkills.slice(0, 8).map(s => (
                   <button
-                    key={s.slug}
+                    key={s.name}
                     onClick={() => addSkill(s.name)}
                     className="w-full flex items-center gap-2 px-3 py-2 hover:bg-white/5 text-sm text-white/80 transition-colors text-left"
                   >

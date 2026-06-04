@@ -1,16 +1,8 @@
 import { PrismaClient } from "@/generated/prisma/client";
+import { PrismaPg } from "@prisma/adapter-pg";
 
 function createPrismaClient() {
-  const dbUrl = process.env.DATABASE_URL || "file:./prisma/dev.db";
-  if (dbUrl.startsWith("file:")) {
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
-    const { PrismaBetterSqlite3 } = require("@prisma/adapter-better-sqlite3");
-    const adapter = new PrismaBetterSqlite3({ url: dbUrl });
-    return new PrismaClient({ adapter } as ConstructorParameters<typeof PrismaClient>[0]);
-  }
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
-  const { PrismaPg } = require("@prisma/adapter-pg");
-  const adapter = new PrismaPg({ connectionString: dbUrl });
+  const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL! });
   return new PrismaClient({ adapter } as ConstructorParameters<typeof PrismaClient>[0]);
 }
 

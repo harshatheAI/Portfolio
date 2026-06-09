@@ -7,24 +7,131 @@ datasource db {
   provider = "sqlite"
 }
 
-model User {
-  id             String    @id @default(cuid())
-  email          String    @unique
-  emailVerified  DateTime?
-  passwordHash   String?
-  name           String?
-  image          String?
-  role           String    @default("CANDIDATE")
-  onboardingDone Boolean   @default(false)
-  createdAt      DateTime  @default(now())
-  updatedAt      DateTime  @updatedAt
+model Brand {
+  id                    String    @id @default(cuid())
+  name                  String
+  slug                  String    @unique
+  website               String
+  logoUrl               String?
+  description           String?
+  story                 String?
+  affiliateBase         String?
+  commissionRate        Float?
+  scrapingDomain        String?
+  internationalShipping Boolean   @default(true)
+  shippingCountries     String    @default("US,UK,UAE,CA,AU,SG")
+  active                Boolean   @default(true)
+  products              Product[]
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+}
 
-  accounts         Account[]
-  sessions         Session[]
-  candidateProfile CandidateProfile?
-  recruiterProfile RecruiterProfile?
-  agencyProfile    AgencyProfile?
-  notifications    Notification[]
+model Product {
+  id            String         @id @default(cuid())
+  brandId       String
+  brand         Brand          @relation(fields: [brandId], references: [id])
+  externalId    String
+  name          String
+  slug          String         @unique
+  description   String?
+  price         Float
+  comparePrice  Float?
+  currency      String         @default("INR")
+  images        String         // JSON array of image URLs
+  categories    String         // JSON array e.g. ["saree","silk"]
+  occasions     String         // JSON array e.g. ["wedding","festive"]
+  style         String         // JSON array e.g. ["traditional","fusion"]
+  gender        String         @default("WOMEN")
+  ageGroup      String         @default("ADULT")
+  giTags        String         @default("[]")
+  fabric        String?
+  sizes         String         @default("[]")
+  colors        String         @default("[]")
+  inStock       Boolean        @default(true)
+  affiliateUrl  String
+  sourceUrl     String
+  lastScrapedAt DateTime       @default(now())
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  wishlists     WishlistItem[]
+
+  @@unique([brandId, externalId])
+  @@index([brandId])
+  @@index([gender])
+  @@index([ageGroup])
+}
+
+model User {
+  id            String                @id @default(cuid())
+  email         String                @unique
+  name          String?
+  password      String?
+  image         String?
+  country       String?
+  city          String?
+  styleProfile  StyleProfile?
+  occasions     Occasion[]
+  wishlist      WishlistItem[]
+  conversations StylistConversation[]
+  accounts      Account[]
+  sessions      Session[]
+  createdAt     DateTime              @default(now())
+  updatedAt     DateTime              @updatedAt
+}
+
+model StyleProfile {
+  id             String   @id @default(cuid())
+  userId         String   @unique
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  persona        String   @default("FUSION")
+  colorPrefs     String   @default("[]")
+  occasionFocus  String   @default("[]")
+  budgetMin      Int      @default(2000)
+  budgetMax      Int      @default(15000)
+  gender         String   @default("WOMEN")
+  avoidColors    String   @default("[]")
+  favoriteBrands String   @default("[]")
+  baseCountry    String   @default("US")
+  updatedAt      DateTime @updatedAt
+}
+
+model Occasion {
+  id        String    @id @default(cuid())
+  userId    String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name      String
+  type      String    @default("WEDDING")
+  date      DateTime?
+  role      String?
+  budgetMin Int?
+  budgetMax Int?
+  location  String?
+  notes     String?
+  outfits   String    @default("[]")
+  createdAt DateTime  @default(now())
+}
+
+model WishlistItem {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  productId String
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  notes     String?
+  savedAt   DateTime @default(now())
+
+  @@unique([userId, productId])
+}
+
+model StylistConversation {
+  id        String   @id @default(cuid())
+  userId    String?
+  user      User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  sessionId String
+  messages  String   @default("[]")
+  context   String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Account {
@@ -40,8 +147,7 @@ model Account {
   scope             String?
   id_token          String?
   session_state     String?
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
 }
@@ -51,8 +157,7 @@ model Session {
   sessionToken String   @unique
   userId       String
   expires      DateTime
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model VerificationToken {
@@ -61,338 +166,4 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
-}
-
-model CandidateProfile {
-  id                 String    @id @default(cuid())
-  userId             String    @unique
-  headline           String?
-  summary            String?
-  location           String?
-  timezone           String?
-  avatarUrl          String?
-  resumeUrl          String?
-  linkedinUrl        String?
-  githubUrl          String?
-  portfolioUrl       String?
-  desiredTitle       String?
-  desiredSalaryMin   Int?
-  desiredSalaryMax   Int?
-  salaryCurrency     String    @default("USD")
-  preferredWorkMode  String?
-  preferredJobTypes  String?
-  preferredLocations String?
-  openToRelocation   Boolean   @default(false)
-  availableFrom      DateTime?
-  noticePeriodDays   Int?
-  profileScore       Int?
-  createdAt          DateTime  @default(now())
-  updatedAt          DateTime  @updatedAt
-
-  user         User              @relation(fields: [userId], references: [id], onDelete: Cascade)
-  skills       CandidateSkill[]
-  experiences  WorkExperience[]
-  education    Education[]
-  projects     Project[]
-  applications Application[]
-  matches      JobMatch[]
-}
-
-model Skill {
-  id       String  @id @default(cuid())
-  name     String  @unique
-  slug     String  @unique
-  category String
-  aliases  String?
-
-  candidateSkills CandidateSkill[]
-  jobSkills       JobSkill[]
-}
-
-model CandidateSkill {
-  id          String  @id @default(cuid())
-  candidateId String
-  skillId     String
-  proficiency String
-  yearsOfExp  Float?
-  verified    Boolean @default(false)
-  featured    Boolean @default(false)
-
-  candidate CandidateProfile @relation(fields: [candidateId], references: [id], onDelete: Cascade)
-  skill     Skill            @relation(fields: [skillId], references: [id])
-
-  @@unique([candidateId, skillId])
-}
-
-model WorkExperience {
-  id           String    @id @default(cuid())
-  candidateId  String
-  company      String
-  title        String
-  location     String?
-  workMode     String?
-  startDate    DateTime
-  endDate      DateTime?
-  current      Boolean   @default(false)
-  description  String?
-  achievements String?
-  skillIds     String?
-
-  candidate CandidateProfile @relation(fields: [candidateId], references: [id], onDelete: Cascade)
-}
-
-model Education {
-  id           String @id @default(cuid())
-  candidateId  String
-  institution  String
-  degree       String?
-  fieldOfStudy String?
-  startYear    Int?
-  endYear      Int?
-  gpa          Float?
-
-  candidate CandidateProfile @relation(fields: [candidateId], references: [id], onDelete: Cascade)
-}
-
-model Project {
-  id          String    @id @default(cuid())
-  candidateId String
-  title       String
-  description String?
-  url         String?
-  repoUrl     String?
-  startDate   DateTime?
-  endDate     DateTime?
-  skillIds    String?
-
-  candidate CandidateProfile @relation(fields: [candidateId], references: [id], onDelete: Cascade)
-}
-
-model Company {
-  id          String  @id @default(cuid())
-  name        String
-  slug        String  @unique
-  logoUrl     String?
-  website     String?
-  industry    String?
-  size        String?
-  description String?
-  location    String?
-  founded     Int?
-  techStack   String?
-
-  recruiters RecruiterProfile[]
-  jobs       Job[]
-}
-
-model RecruiterProfile {
-  id        String  @id @default(cuid())
-  userId    String  @unique
-  companyId String?
-  title     String?
-  phone     String?
-
-  user    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  company Company? @relation(fields: [companyId], references: [id])
-  jobs    Job[]
-}
-
-model AgencyProfile {
-  id              String  @id @default(cuid())
-  userId          String  @unique
-  agencyName      String
-  website         String?
-  logoUrl         String?
-  description     String?
-  specializations String?
-  teamSize        Int?
-
-  user       User           @relation(fields: [userId], references: [id], onDelete: Cascade)
-  clients    AgencyClient[]
-  placements Placement[]
-}
-
-model AgencyClient {
-  id            String    @id @default(cuid())
-  agencyId      String
-  companyName   String
-  contractStart DateTime?
-  contractEnd   DateTime?
-  feePercentage Float?
-  active        Boolean   @default(true)
-  notes         String?
-
-  agency     AgencyProfile @relation(fields: [agencyId], references: [id], onDelete: Cascade)
-  placements Placement[]
-}
-
-model Job {
-  id               String    @id @default(cuid())
-  recruiterId      String
-  companyId        String
-  title            String
-  slug             String    @unique
-  description      String
-  shortDescription String?
-  requirements     String?
-  responsibilities String?
-  benefits         String?
-  location         String?
-  workMode         String
-  jobType          String
-  experienceLevel  String
-  salaryMin        Int?
-  salaryMax        Int?
-  salaryCurrency   String    @default("USD")
-  salaryPublic     Boolean   @default(true)
-  headcount        Int       @default(1)
-  department       String?
-  published        Boolean   @default(false)
-  publishedAt      DateTime?
-  closedAt         DateTime?
-  featured         Boolean   @default(false)
-  aiEnhanced       Boolean   @default(false)
-  aiTags           String?
-  biasCheckPassed  Boolean?
-  biasIssues       String?
-  createdAt        DateTime  @default(now())
-  updatedAt        DateTime  @updatedAt
-
-  recruiter          RecruiterProfile    @relation(fields: [recruiterId], references: [id])
-  company            Company             @relation(fields: [companyId], references: [id])
-  skills             JobSkill[]
-  applications       Application[]
-  matches            JobMatch[]
-  screeningQuestions ScreeningQuestion[]
-  placements         Placement[]
-}
-
-model JobSkill {
-  id       String  @id @default(cuid())
-  jobId    String
-  skillId  String
-  required Boolean @default(true)
-  minYears Float?
-  weight   Float   @default(1.0)
-
-  job   Job   @relation(fields: [jobId], references: [id], onDelete: Cascade)
-  skill Skill @relation(fields: [skillId], references: [id])
-
-  @@unique([jobId, skillId])
-}
-
-model ScreeningQuestion {
-  id       String  @id @default(cuid())
-  jobId    String
-  question String
-  type     String
-  options  String?
-  required Boolean @default(true)
-  order    Int
-
-  job     Job               @relation(fields: [jobId], references: [id], onDelete: Cascade)
-  answers ScreeningAnswer[]
-}
-
-model Application {
-  id                 String    @id @default(cuid())
-  jobId              String
-  candidateId        String
-  status             String    @default("APPLIED")
-  coverLetter        String?
-  appliedVia         String?
-  matchScore         Float?
-  matchExplanation   String?
-  aiScreeningScore   Float?
-  aiScreeningSummary String?
-  recruiterNotes     String?
-  stageUpdatedAt     DateTime?
-  isArchived         Boolean   @default(false)
-  createdAt          DateTime  @default(now())
-  updatedAt          DateTime  @updatedAt
-
-  job              Job                        @relation(fields: [jobId], references: [id])
-  candidate        CandidateProfile           @relation(fields: [candidateId], references: [id])
-  statusHistory    ApplicationStatusHistory[]
-  screeningAnswers ScreeningAnswer[]
-  placement        Placement?
-
-  @@unique([jobId, candidateId])
-}
-
-model ApplicationStatusHistory {
-  id            String   @id @default(cuid())
-  applicationId String
-  fromStatus    String?
-  toStatus      String
-  changedBy     String?
-  reason        String?
-  automated     Boolean  @default(false)
-  createdAt     DateTime @default(now())
-
-  application Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
-}
-
-model ScreeningAnswer {
-  id            String @id @default(cuid())
-  applicationId String
-  questionId    String
-  answer        String
-
-  application Application       @relation(fields: [applicationId], references: [id], onDelete: Cascade)
-  question    ScreeningQuestion @relation(fields: [questionId], references: [id])
-}
-
-model JobMatch {
-  id              String    @id @default(cuid())
-  jobId           String
-  candidateId     String
-  overallScore    Float
-  skillScore      Float
-  experienceScore Float
-  preferenceScore Float
-  semanticScore   Float
-  explanation     String?
-  strengthPoints  String?
-  gapPoints       String?
-  recommendation  String?
-  computedAt      DateTime  @default(now())
-  expiresAt       DateTime?
-
-  job       Job              @relation(fields: [jobId], references: [id], onDelete: Cascade)
-  candidate CandidateProfile @relation(fields: [candidateId], references: [id], onDelete: Cascade)
-
-  @@unique([jobId, candidateId])
-}
-
-model Placement {
-  id            String    @id @default(cuid())
-  agencyId      String
-  clientId      String
-  jobId         String
-  applicationId String    @unique
-  placedAt      DateTime  @default(now())
-  salary        Int?
-  feeAmount     Float?
-  guaranteeDays Int?      @default(90)
-  notes         String?
-
-  agency      AgencyProfile @relation(fields: [agencyId], references: [id])
-  client      AgencyClient  @relation(fields: [clientId], references: [id])
-  job         Job           @relation(fields: [jobId], references: [id])
-  application Application   @relation(fields: [applicationId], references: [id])
-}
-
-model Notification {
-  id        String    @id @default(cuid())
-  userId    String
-  type      String
-  title     String
-  body      String?
-  data      String?
-  read      Boolean   @default(false)
-  readAt    DateTime?
-  createdAt DateTime  @default(now())
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }

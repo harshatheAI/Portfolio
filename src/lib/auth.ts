@@ -1,80 +1,45 @@
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
-import { PrismaAdapter } from "@auth/prisma-adapter";
-import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/prisma";
+import bcrypt from "bcryptjs";
 import { z } from "zod";
 
-const loginSchema = z.object({
+const credentialsSchema = z.object({
   email: z.string().email(),
   password: z.string().min(6),
 });
 
-export const { handlers, auth, signIn, signOut } = NextAuth({
-  adapter: PrismaAdapter(prisma) as ReturnType<typeof PrismaAdapter>,
+export const { handlers, signIn, signOut, auth } = NextAuth({
   session: { strategy: "jwt" },
   pages: {
     signIn: "/sign-in",
-    newUser: "/sign-up",
   },
   providers: [
     Credentials({
       async authorize(credentials) {
-        const parsed = loginSchema.safeParse(credentials);
+        const parsed = credentialsSchema.safeParse(credentials);
         if (!parsed.success) return null;
 
         const user = await prisma.user.findUnique({
           where: { email: parsed.data.email },
         });
-        if (!user?.passwordHash) return null;
+        if (!user?.password) return null;
 
-        const valid = await bcrypt.compare(parsed.data.password, user.passwordHash);
+        const valid = await bcrypt.compare(parsed.data.password, user.password);
         if (!valid) return null;
 
-        return {
-          id: user.id,
-          email: user.email,
-          name: user.name,
-          image: user.image,
-          role: user.role,
-          onboardingDone: user.onboardingDone,
-        };
+        return { id: user.id, email: user.email, name: user.name, image: user.image };
       },
     }),
   ],
   callbacks: {
     async jwt({ token, user }) {
-      if (user) {
-        token.id = user.id;
-        token.role = (user as { role?: string }).role;
-        token.onboardingDone = (user as { onboardingDone?: boolean }).onboardingDone;
-      }
+      if (user) token.id = user.id;
       return token;
     },
     async session({ session, token }) {
-      if (token) {
-        session.user.id = token.id as string;
-        session.user.role = token.role as string;
-        session.user.onboardingDone = token.onboardingDone as boolean;
-      }
+      if (token.id) session.user.id = token.id as string;
       return session;
     },
   },
 });
-
-declare module "next-auth" {
-  interface User {
-    role?: string;
-    onboardingDone?: boolean;
-  }
-  interface Session {
-    user: {
-      id: string;
-      email: string;
-      name?: string | null;
-      image?: string | null;
-      role: string;
-      onboardingDone: boolean;
-    };
-  }
-}

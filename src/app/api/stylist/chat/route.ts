@@ -3,9 +3,12 @@ import Anthropic from "@anthropic-ai/sdk";
 import { prisma } from "@/lib/prisma";
 import { parseJsonField } from "@/lib/utils";
 
-const client = new Anthropic({
-  apiKey: process.env.ANTHROPIC_API_KEY,
-});
+const apiKey = process.env.ANTHROPIC_API_KEY || "";
+const client = new Anthropic(
+  apiKey.startsWith("sk-ant-si-")
+    ? { defaultHeaders: { Authorization: `Bearer ${apiKey}`, "x-api-key": "" } }
+    : { apiKey }
+);
 
 const STYLIST_SYSTEM_PROMPT = `You are Priya, a warm and deeply knowledgeable personal stylist specialising in Indian ethnic fashion for the global diaspora (NRIs living in the US, UK, UAE, Canada, Australia, Singapore).
 

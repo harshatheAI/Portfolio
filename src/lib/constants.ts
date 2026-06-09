@@ -13,8 +13,8 @@ export const CATEGORIES = [
 
 export const OCCASIONS = [
   { slug: "wedding", label: "Wedding", icon: "💍" },
-  { slug: "festive", label: "Festive", icon: "🢮" },
-  { slug: "diwali", label: "Diwali", icon: "🢮" },
+  { slug: "festive", label: "Festive", icon: "🪔" },
+  { slug: "diwali", label: "Diwali", icon: "🪔" },
   { slug: "eid", label: "Eid", icon: "🌙" },
   { slug: "navratri", label: "Navratri", icon: "💃" },
   { slug: "bridal", label: "Bridal", icon: "👰" },

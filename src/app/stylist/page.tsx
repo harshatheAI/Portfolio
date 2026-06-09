@@ -34,7 +34,7 @@ export default async function StylistPage({
             <div className="p-4 bg-white/5 rounded-xl">
               <h3 className="text-sm font-semibold text-[#D4A843] mb-2">I can help with:</h3>
               <ul className="space-y-1.5 text-sm text-white/70">
-                <li>🢮 Festival looks (Diwali, Navratri, Eid)</li>
+                <li>🪔 Festival looks (Diwali, Navratri, Eid)</li>
                 <li>💍 Wedding guest outfits abroad</li>
                 <li>👰 Bridal & bridal party styling</li>
                 <li>💼 Ethnic office wear</li>

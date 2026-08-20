@@ -37,7 +37,6 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           name: user.name,
           image: user.image,
           role: user.role,
-          onboardingDone: user.onboardingDone,
         };
       },
     }),
@@ -47,7 +46,6 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       if (user) {
         token.id = user.id;
         token.role = (user as { role?: string }).role;
-        token.onboardingDone = (user as { onboardingDone?: boolean }).onboardingDone;
       }
       return token;
     },
@@ -55,7 +53,6 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       if (token) {
         session.user.id = token.id as string;
         session.user.role = token.role as string;
-        session.user.onboardingDone = token.onboardingDone as boolean;
       }
       return session;
     },
@@ -65,7 +62,6 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 declare module "next-auth" {
   interface User {
     role?: string;
-    onboardingDone?: boolean;
   }
   interface Session {
     user: {
@@ -74,7 +70,6 @@ declare module "next-auth" {
       name?: string | null;
       image?: string | null;
       role: string;
-      onboardingDone: boolean;
     };
   }
 }

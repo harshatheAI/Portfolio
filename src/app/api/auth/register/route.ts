@@ -6,8 +6,8 @@ import { z } from "zod";
 const registerSchema = z.object({
   name: z.string().min(2),
   email: z.string().email(),
+  phone: z.string().optional(),
   password: z.string().min(8),
-  role: z.enum(["CANDIDATE", "RECRUITER", "AGENCY"]),
 });
 
 export async function POST(req: NextRequest) {
@@ -15,10 +15,13 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     const parsed = registerSchema.safeParse(body);
     if (!parsed.success) {
-      return NextResponse.json({ error: "Invalid input", details: parsed.error.flatten() }, { status: 400 });
+      return NextResponse.json(
+        { error: "Invalid input", details: parsed.error.flatten() },
+        { status: 400 },
+      );
     }
 
-    const { name, email, password, role } = parsed.data;
+    const { name, email, phone, password } = parsed.data;
 
     const existing = await prisma.user.findUnique({ where: { email } });
     if (existing) {
@@ -28,7 +31,7 @@ export async function POST(req: NextRequest) {
     const passwordHash = await bcrypt.hash(password, 12);
 
     const user = await prisma.user.create({
-      data: { name, email, passwordHash, role },
+      data: { name, email, phone, passwordHash, role: "CUSTOMER" },
       select: { id: true, email: true, name: true, role: true },
     });
 

@@ -7,24 +7,26 @@ datasource db {
   provider = "sqlite"
 }
 
+// ─────────────────────────────────────────────────────────────
+// Auth (NextAuth) models
+// ─────────────────────────────────────────────────────────────
+
 model User {
   id             String    @id @default(cuid())
   email          String    @unique
   emailVerified  DateTime?
   passwordHash   String?
   name           String?
+  phone          String?
   image          String?
-  role           String    @default("CANDIDATE")
-  onboardingDone Boolean   @default(false)
+  role           String    @default("CUSTOMER") // CUSTOMER | ADMIN
   createdAt      DateTime  @default(now())
   updatedAt      DateTime  @updatedAt
 
-  accounts         Account[]
-  sessions         Session[]
-  candidateProfile CandidateProfile?
-  recruiterProfile RecruiterProfile?
-  agencyProfile    AgencyProfile?
-  notifications    Notification[]
+  accounts Account[]
+  sessions Session[]
+  quotes   Quote[]
+  bookings Booking[]
 }
 
 model Account {
@@ -51,8 +53,7 @@ model Session {
   sessionToken String   @unique
   userId       String
   expires      DateTime
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model VerificationToken {
@@ -63,336 +64,164 @@ model VerificationToken {
   @@unique([identifier, token])
 }
 
-model CandidateProfile {
-  id                 String    @id @default(cuid())
-  userId             String    @unique
-  headline           String?
-  summary            String?
-  location           String?
-  timezone           String?
-  avatarUrl          String?
-  resumeUrl          String?
-  linkedinUrl        String?
-  githubUrl          String?
-  portfolioUrl       String?
-  desiredTitle       String?
-  desiredSalaryMin   Int?
-  desiredSalaryMax   Int?
-  salaryCurrency     String    @default("USD")
-  preferredWorkMode  String?
-  preferredJobTypes  String?
-  preferredLocations String?
-  openToRelocation   Boolean   @default(false)
-  availableFrom      DateTime?
-  noticePeriodDays   Int?
-  profileScore       Int?
-  createdAt          DateTime  @default(now())
-  updatedAt          DateTime  @updatedAt
+// ─────────────────────────────────────────────────────────────
+// Moving domain
+// ─────────────────────────────────────────────────────────────
 
-  user         User              @relation(fields: [userId], references: [id], onDelete: Cascade)
-  skills       CandidateSkill[]
-  experiences  WorkExperience[]
-  education    Education[]
-  projects     Project[]
-  applications Application[]
-  matches      JobMatch[]
+/// An instant quote generated from a customer's move details, photos and items.
+model Quote {
+  id        String   @id @default(cuid())
+  reference String   @unique // human-friendly, e.g. BBM-4F9K2
+
+  userId String?
+  user   User?   @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  // Contact (captured even before signup)
+  contactName  String?
+  contactEmail String?
+  contactPhone String?
+
+  // Move details
+  originAddress String
+  originZip     String?
+  destAddress   String
+  destZip       String?
+  distanceMiles Float   @default(0)
+  homeSize      String  // STUDIO | ONE_BED | TWO_BED | THREE_BED | FOUR_BED_PLUS | OFFICE | OTHER
+  originFloor   Int     @default(0)
+  destFloor     Int     @default(0)
+  originElevator Boolean @default(false)
+  destElevator   Boolean @default(false)
+  preferredDate DateTime?
+  flexibleDates Boolean @default(false)
+
+  // Inventory / analysis
+  itemsDescription String? // free text from customer
+  items            Json?   // structured item list [{name, quantity, category, bulky}]
+  photos           Json?   // array of photo refs [{url, note}]
+  estimatedVolumeCuFt Float @default(0)
+  estimatedWeightLbs  Float @default(0)
+  laborHours          Float @default(0)
+  crewSize            Int   @default(2)
+
+  addons Json? // selected add-ons ["packing","storage",...]
+
+  // Generated pricing tiers snapshot
+  tiers        Json    // [{id,name,price,summary,inclusions[]}]
+  breakdown    Json?   // full itemized breakdown {lineItems,addonItems,baseSubtotal,...}
+  aiSummary    String? // human explanation of how the quote was built
+  aiConfidence String  @default("estimate") // vision | heuristic | estimate
+
+  status    String   @default("DRAFT") // DRAFT | SENT | ACCEPTED | BOOKED | EXPIRED
+  expiresAt DateTime?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  booking Booking?
 }
 
-model Skill {
-  id       String  @id @default(cuid())
-  name     String  @unique
-  slug     String  @unique
-  category String
-  aliases  String?
+/// A confirmed, scheduled move.
+model Booking {
+  id        String   @id @default(cuid())
+  reference String   @unique // BBM-B-XXXX
 
-  candidateSkills CandidateSkill[]
-  jobSkills       JobSkill[]
+  quoteId String @unique
+  quote   Quote  @relation(fields: [quoteId], references: [id], onDelete: Cascade)
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  selectedTier String // basic | standard | premium
+  totalAmount  Float
+  depositAmount Float
+  balanceAmount Float
+
+  scheduledDate DateTime
+  timeSlot      String // "8:00 AM – 10:00 AM"
+
+  crewId String?
+  crew   Crew?   @relation(fields: [crewId], references: [id], onDelete: SetNull)
+
+  status String @default("CONFIRMED") // CONFIRMED | SCHEDULED | CREW_ASSIGNED | EN_ROUTE | LOADING | IN_TRANSIT | UNLOADING | COMPLETED | CANCELLED
+
+  // Tracking (simulated live location)
+  trackingEnabled Boolean @default(true)
+  crewLat  Float?
+  crewLng  Float?
+  etaMinutes Int?
+
+  payment  Payment?
+  events   TrackingEvent[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
-model CandidateSkill {
-  id          String  @id @default(cuid())
-  candidateId String
-  skillId     String
-  proficiency String
-  yearsOfExp  Float?
-  verified    Boolean @default(false)
-  featured    Boolean @default(false)
-
-  candidate CandidateProfile @relation(fields: [candidateId], references: [id], onDelete: Cascade)
-  skill     Skill            @relation(fields: [skillId], references: [id])
-
-  @@unique([candidateId, skillId])
-}
-
-model WorkExperience {
-  id           String    @id @default(cuid())
-  candidateId  String
-  company      String
-  title        String
-  location     String?
-  workMode     String?
-  startDate    DateTime
-  endDate      DateTime?
-  current      Boolean   @default(false)
-  description  String?
-  achievements String?
-  skillIds     String?
-
-  candidate CandidateProfile @relation(fields: [candidateId], references: [id], onDelete: Cascade)
-}
-
-model Education {
-  id           String @id @default(cuid())
-  candidateId  String
-  institution  String
-  degree       String?
-  fieldOfStudy String?
-  startYear    Int?
-  endYear      Int?
-  gpa          Float?
-
-  candidate CandidateProfile @relation(fields: [candidateId], references: [id], onDelete: Cascade)
-}
-
-model Project {
-  id          String    @id @default(cuid())
-  candidateId String
-  title       String
-  description String?
-  url         String?
-  repoUrl     String?
-  startDate   DateTime?
-  endDate     DateTime?
-  skillIds    String?
-
-  candidate CandidateProfile @relation(fields: [candidateId], references: [id], onDelete: Cascade)
-}
-
-model Company {
-  id          String  @id @default(cuid())
-  name        String
-  slug        String  @unique
-  logoUrl     String?
-  website     String?
-  industry    String?
-  size        String?
-  description String?
-  location    String?
-  founded     Int?
-  techStack   String?
-
-  recruiters RecruiterProfile[]
-  jobs       Job[]
-}
-
-model RecruiterProfile {
+model Payment {
   id        String  @id @default(cuid())
-  userId    String  @unique
-  companyId String?
-  title     String?
-  phone     String?
+  bookingId String  @unique
+  booking   Booking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
 
-  user    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  company Company? @relation(fields: [companyId], references: [id])
-  jobs    Job[]
+  amount   Float
+  kind     String // DEPOSIT | BALANCE
+  status   String @default("PAID") // PENDING | PAID | REFUNDED
+  method   String @default("card")
+  last4    String?
+  reference String @unique // txn ref
+  createdAt DateTime @default(now())
 }
 
-model AgencyProfile {
-  id              String  @id @default(cuid())
-  userId          String  @unique
-  agencyName      String
-  website         String?
-  logoUrl         String?
-  description     String?
-  specializations String?
-  teamSize        Int?
+model TrackingEvent {
+  id        String  @id @default(cuid())
+  bookingId String
+  booking   Booking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
 
-  user       User           @relation(fields: [userId], references: [id], onDelete: Cascade)
-  clients    AgencyClient[]
-  placements Placement[]
+  status  String // maps to Booking.status stages
+  title   String
+  detail  String?
+  lat     Float?
+  lng     Float?
+  createdAt DateTime @default(now())
 }
 
-model AgencyClient {
-  id            String    @id @default(cuid())
-  agencyId      String
-  companyName   String
-  contractStart DateTime?
-  contractEnd   DateTime?
-  feePercentage Float?
-  active        Boolean   @default(true)
-  notes         String?
+model Crew {
+  id       String @id @default(cuid())
+  name     String // "Team Kodiak"
+  lead     String
+  size     Int    @default(3)
+  phone    String?
+  active   Boolean @default(true)
 
-  agency     AgencyProfile @relation(fields: [agencyId], references: [id], onDelete: Cascade)
-  placements Placement[]
+  bookings Booking[]
 }
 
-model Job {
-  id               String    @id @default(cuid())
-  recruiterId      String
-  companyId        String
-  title            String
-  slug             String    @unique
-  description      String
-  shortDescription String?
-  requirements     String?
-  responsibilities String?
-  benefits         String?
-  location         String?
-  workMode         String
-  jobType          String
-  experienceLevel  String
-  salaryMin        Int?
-  salaryMax        Int?
-  salaryCurrency   String    @default("USD")
-  salaryPublic     Boolean   @default(true)
-  headcount        Int       @default(1)
-  department       String?
-  published        Boolean   @default(false)
-  publishedAt      DateTime?
-  closedAt         DateTime?
-  featured         Boolean   @default(false)
-  aiEnhanced       Boolean   @default(false)
-  aiTags           String?
-  biasCheckPassed  Boolean?
-  biasIssues       String?
-  createdAt        DateTime  @default(now())
-  updatedAt        DateTime  @updatedAt
-
-  recruiter          RecruiterProfile    @relation(fields: [recruiterId], references: [id])
-  company            Company             @relation(fields: [companyId], references: [id])
-  skills             JobSkill[]
-  applications       Application[]
-  matches            JobMatch[]
-  screeningQuestions ScreeningQuestion[]
-  placements         Placement[]
-}
-
-model JobSkill {
+/// Company-editable pricing guidelines. Single active row (isActive).
+model PricingConfig {
   id       String  @id @default(cuid())
-  jobId    String
-  skillId  String
-  required Boolean @default(true)
-  minYears Float?
-  weight   Float   @default(1.0)
+  isActive Boolean @default(true)
 
-  job   Job   @relation(fields: [jobId], references: [id], onDelete: Cascade)
-  skill Skill @relation(fields: [skillId], references: [id])
+  baseFee            Float @default(149)   // truck + dispatch
+  ratePerHourPerMover Float @default(65)   // labor
+  ratePerMile        Float @default(1.25)  // long-distance travel
+  freeMileRadius     Float @default(25)    // miles included before per-mile kicks in
+  ratePerCuFt        Float @default(0.55)  // volume component
+  stairsFeePerFlight Float @default(45)
+  noElevatorSurcharge Float @default(35)
+  depositPercent     Float @default(0.20)
 
-  @@unique([jobId, skillId])
-}
+  // Add-on prices
+  packingService     Float @default(0.40)  // multiplier on labor, expressed as fraction added
+  packingFlat        Float @default(280)
+  storageMonthly     Float @default(180)
+  specialtyItemFee   Float @default(120)   // piano, safe, gym equipment (each)
+  insuranceFullValue Float @default(0.015) // fraction of declared value
 
-model ScreeningQuestion {
-  id       String  @id @default(cuid())
-  jobId    String
-  question String
-  type     String
-  options  String?
-  required Boolean @default(true)
-  order    Int
+  // Tier multipliers over the computed base
+  tierBasicMult    Float @default(1.0)
+  tierStandardMult Float @default(1.28)
+  tierPremiumMult  Float @default(1.6)
 
-  job     Job               @relation(fields: [jobId], references: [id], onDelete: Cascade)
-  answers ScreeningAnswer[]
-}
-
-model Application {
-  id                 String    @id @default(cuid())
-  jobId              String
-  candidateId        String
-  status             String    @default("APPLIED")
-  coverLetter        String?
-  appliedVia         String?
-  matchScore         Float?
-  matchExplanation   String?
-  aiScreeningScore   Float?
-  aiScreeningSummary String?
-  recruiterNotes     String?
-  stageUpdatedAt     DateTime?
-  isArchived         Boolean   @default(false)
-  createdAt          DateTime  @default(now())
-  updatedAt          DateTime  @updatedAt
-
-  job              Job                        @relation(fields: [jobId], references: [id])
-  candidate        CandidateProfile           @relation(fields: [candidateId], references: [id])
-  statusHistory    ApplicationStatusHistory[]
-  screeningAnswers ScreeningAnswer[]
-  placement        Placement?
-
-  @@unique([jobId, candidateId])
-}
-
-model ApplicationStatusHistory {
-  id            String   @id @default(cuid())
-  applicationId String
-  fromStatus    String?
-  toStatus      String
-  changedBy     String?
-  reason        String?
-  automated     Boolean  @default(false)
-  createdAt     DateTime @default(now())
-
-  application Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
-}
-
-model ScreeningAnswer {
-  id            String @id @default(cuid())
-  applicationId String
-  questionId    String
-  answer        String
-
-  application Application       @relation(fields: [applicationId], references: [id], onDelete: Cascade)
-  question    ScreeningQuestion @relation(fields: [questionId], references: [id])
-}
-
-model JobMatch {
-  id              String    @id @default(cuid())
-  jobId           String
-  candidateId     String
-  overallScore    Float
-  skillScore      Float
-  experienceScore Float
-  preferenceScore Float
-  semanticScore   Float
-  explanation     String?
-  strengthPoints  String?
-  gapPoints       String?
-  recommendation  String?
-  computedAt      DateTime  @default(now())
-  expiresAt       DateTime?
-
-  job       Job              @relation(fields: [jobId], references: [id], onDelete: Cascade)
-  candidate CandidateProfile @relation(fields: [candidateId], references: [id], onDelete: Cascade)
-
-  @@unique([jobId, candidateId])
-}
-
-model Placement {
-  id            String    @id @default(cuid())
-  agencyId      String
-  clientId      String
-  jobId         String
-  applicationId String    @unique
-  placedAt      DateTime  @default(now())
-  salary        Int?
-  feeAmount     Float?
-  guaranteeDays Int?      @default(90)
-  notes         String?
-
-  agency      AgencyProfile @relation(fields: [agencyId], references: [id])
-  client      AgencyClient  @relation(fields: [clientId], references: [id])
-  job         Job           @relation(fields: [jobId], references: [id])
-  application Application   @relation(fields: [applicationId], references: [id])
-}
-
-model Notification {
-  id        String    @id @default(cuid())
-  userId    String
-  type      String
-  title     String
-  body      String?
-  data      String?
-  read      Boolean   @default(false)
-  readAt    DateTime?
-  createdAt DateTime  @default(now())
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  notes     String?
+  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now())
 }

@@ -33,7 +33,7 @@ function ref(prefix: string) {
   return `${prefix}-${s}`;
 }
 
-async function main() {
+export async function seed() {
   console.log("🐻 Seeding Brother Bear Moving…");
 
   // Reset domain tables (keep it idempotent for repeat seeds)
@@ -192,11 +192,16 @@ async function main() {
   console.log(`   Live move to track: ${booking1.reference}`);
 }
 
-main()
-  .catch((e) => {
-    console.error(e);
-    process.exit(1);
-  })
-  .finally(async () => {
-    await prisma.$disconnect();
-  });
+// Auto-run only when executed directly (e.g. `npm run db:seed`), not when
+// imported by the seed guard.
+const invokedPath = process.argv[1]?.replace(/\\/g, "/") ?? "";
+if (invokedPath.endsWith("prisma/seed.ts")) {
+  seed()
+    .catch((e) => {
+      console.error(e);
+      process.exit(1);
+    })
+    .finally(async () => {
+      await prisma.$disconnect();
+    });
+}

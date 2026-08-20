@@ -55,6 +55,49 @@ npm run dev                   # http://localhost:3000
 The seed also creates a move that's **in transit** so you can watch live tracking right away
 (the reference is printed at the end of `npm run db:seed`).
 
+## Deploy to Railway
+
+This repo is container-ready for [Railway](https://railway.com), which keeps the SQLite
+setup as-is on a persistent volume — no database migration needed.
+
+[![Deploy on Railway](https://railway.com/button.svg)](https://railway.com/new)
+
+**One-time setup (~3 minutes):**
+
+1. **New Project → Deploy from GitHub repo** → pick this repository and the
+   `claude/movers-website-redesign-uyqv7z` branch. Railway reads `railway.json` and
+   builds the `Dockerfile` automatically.
+2. **Add a Volume** to the service (service → **Variables/Settings → Volumes → New Volume**)
+   and set the **mount path to `/data`**. This is where the SQLite database lives so your
+   data survives redeploys.
+3. **Set environment variables** (service → **Variables**):
+   | Variable | Value |
+   | --- | --- |
+   | `AUTH_SECRET` | a random string — `openssl rand -base64 32` |
+   | `NEXTAUTH_SECRET` | the same value as `AUTH_SECRET` |
+   | `DATABASE_URL` | `file:/data/prod.db` |
+   | `ANTHROPIC_API_KEY` | *(optional)* enables AI photo estimates |
+
+   `PORT` is provided by Railway automatically — don't set it.
+4. **Generate a domain** (service → **Settings → Networking → Generate Domain**) to get
+   your public `https://…up.railway.app` URL.
+
+On first boot the container runs `prisma migrate deploy` and seeds demo data (only if the
+database is empty — redeploys never wipe it). Sign in with the demo admin account above to
+tune pricing, or register as a new customer and book a move.
+
+> **Scaling note:** SQLite on one volume means a single instance. If you need multiple
+> replicas or autoscaling, switch Prisma's datasource to Postgres (Railway offers a managed
+> Postgres plugin) — the schema is portable.
+
+To run the production image locally:
+
+```bash
+docker build -t brother-bear .
+docker run -p 3000:3000 -e AUTH_SECRET=dev -e NEXTAUTH_SECRET=dev \
+  -e DATABASE_URL="file:/data/prod.db" -v "$PWD/data:/data" brother-bear
+```
+
 ## Project layout
 
 ```

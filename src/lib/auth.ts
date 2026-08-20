@@ -12,6 +12,9 @@ const loginSchema = z.object({
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   adapter: PrismaAdapter(prisma) as ReturnType<typeof PrismaAdapter>,
+  // Self-hosted / behind-proxy deploys (and `next start`) need this, otherwise
+  // Auth.js rejects requests with UntrustedHost. Safe because the app owns its host.
+  trustHost: true,
   session: { strategy: "jwt" },
   pages: {
     signIn: "/sign-in",

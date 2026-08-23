@@ -1,0 +1,740 @@
+<title>Brother Bear Moving</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700;12..96,800&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800&display=swap">
+
+<style>
+:root{
+  --forest-50:#edf7f1;--forest-100:#d4ecdd;--forest-200:#a9d8bb;--forest-300:#74bd91;
+  --forest-400:#479c6a;--forest-500:#2f7d4f;--forest-600:#226240;--forest-700:#1c4e34;
+  --forest-800:#163d29;--forest-900:#0f2b1d;
+  --honey-50:#fdf6e9;--honey-100:#fbe9c4;--honey-200:#f7d287;--honey-300:#f2b84a;
+  --honey-400:#eca01f;--honey-500:#d9820b;--honey-600:#b56508;--honey-700:#8f4c0c;
+
+  --bg:#faf7f1;--fg:#1c1917;--surface:#ffffff;--surface-2:#f4efe6;--surface-3:#ebe4d6;
+  --border:#e6dece;--border-strong:#d3c8b3;--muted:#8b8378;--secondary:#57534e;
+  --primary:var(--forest-600);--primary-hover:var(--forest-700);
+  --accent:var(--honey-400);--accent-hover:var(--honey-500);--ring:var(--forest-500);
+  --shadow-card:0 1px 2px rgba(28,25,23,.04),0 8px 24px -12px rgba(28,25,23,.12);
+  --shadow-lift:0 2px 4px rgba(28,25,23,.05),0 18px 40px -16px rgba(28,25,23,.22);
+  --radius:.85rem;
+  --disp:'Bricolage Grotesque',ui-sans-serif,system-ui,sans-serif;
+  --sans:'Plus Jakarta Sans',ui-sans-serif,system-ui,sans-serif;
+}
+:root:not([data-theme="light"]){
+  @media (prefers-color-scheme:dark){
+    --bg:#0e1a13;--fg:#f2efe8;--surface:#15251b;--surface-2:#1a2c20;--surface-3:#213629;
+    --border:#26382c;--border-strong:#33513d;--muted:#93a699;--secondary:#c3cfc7;
+    --primary:var(--forest-400);--primary-hover:var(--forest-300);--ring:var(--forest-400);
+    --shadow-card:0 1px 2px rgba(0,0,0,.4),0 10px 26px -14px rgba(0,0,0,.6);
+    --shadow-lift:0 2px 4px rgba(0,0,0,.4),0 22px 48px -18px rgba(0,0,0,.7);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0e1a13;--fg:#f2efe8;--surface:#15251b;--surface-2:#1a2c20;--surface-3:#213629;
+  --border:#26382c;--border-strong:#33513d;--muted:#93a699;--secondary:#c3cfc7;
+  --primary:var(--forest-400);--primary-hover:var(--forest-300);--ring:var(--forest-400);
+  --shadow-card:0 1px 2px rgba(0,0,0,.4),0 10px 26px -14px rgba(0,0,0,.6);
+  --shadow-lift:0 2px 4px rgba(0,0,0,.4),0 22px 48px -18px rgba(0,0,0,.7);
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--fg);font-family:var(--sans);line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+h1,h2,h3,h4{font-family:var(--disp);font-weight:800;line-height:1.05;text-wrap:balance;letter-spacing:-.01em}
+a{color:inherit;text-decoration:none}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+input,select,textarea{font-family:inherit;font-size:15px}
+img{max-width:100%}
+:focus-visible{outline:2px solid var(--ring);outline-offset:2px}
+.tnum{font-variant-numeric:tabular-nums}
+
+/* layout */
+.wrap{max-width:1180px;margin:0 auto;padding:0 20px}
+.screen{display:none;animation:fade .45s ease both}
+.screen.active{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto}}
+
+/* buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;border-radius:999px;font-weight:700;font-size:14px;padding:0 20px;height:44px;transition:.18s;white-space:nowrap}
+.btn:active{transform:scale(.98)}
+.btn-primary{background:var(--primary);color:#fff}
+.btn-primary:hover{background:var(--primary-hover)}
+.btn-accent{background:var(--accent);color:var(--forest-900);box-shadow:0 6px 16px -8px var(--accent)}
+.btn-accent:hover{background:var(--accent-hover)}
+.btn-outline{border:1px solid var(--border-strong);background:var(--surface)}
+.btn-outline:hover{background:var(--surface-2)}
+.btn-ghost:hover{background:var(--surface-2)}
+.btn-lg{height:52px;padding:0 26px;font-size:15px}
+.btn-white{background:#fff;color:var(--forest-800)}
+.btn-block{width:100%}
+
+/* pills / badges */
+.badge{display:inline-flex;align-items:center;gap:.4rem;border-radius:999px;padding:.3rem .7rem;font-size:12.5px;font-weight:600}
+.badge-honey{background:var(--honey-50);color:var(--honey-700);border:1px solid var(--honey-100)}
+.badge-forest{background:var(--forest-50);color:var(--forest-700);border:1px solid var(--forest-100)}
+.badge-glass{background:rgba(255,255,255,.12);color:var(--honey-200);backdrop-filter:blur(6px)}
+
+.card{background:var(--surface);border:1px solid var(--border);border-radius:calc(var(--radius) + .25rem);box-shadow:var(--shadow-card)}
+
+/* header */
+header.bar{position:sticky;top:0;z-index:50;background:color-mix(in srgb,var(--bg) 85%,transparent);backdrop-filter:blur(12px);border-bottom:1px solid var(--border)}
+.bar .row{display:flex;align-items:center;justify-content:space-between;height:66px;gap:16px}
+.logo{display:flex;align-items:center;gap:10px}
+.logo .mark{width:38px;height:38px;flex:0 0 auto}
+.logo .name{font-family:var(--disp);font-weight:800;font-size:17px;line-height:1}
+.logo .sub{font-size:10px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--honey-600)}
+.nav{display:flex;gap:2px}
+.nav a{padding:8px 14px;border-radius:999px;font-size:14px;font-weight:600;color:var(--secondary)}
+.nav a:hover{background:var(--surface-2);color:var(--fg)}
+.bar-actions{display:flex;align-items:center;gap:8px}
+.phone{display:inline-flex;align-items:center;gap:6px;font-weight:700;font-size:14px;color:var(--forest-700)}
+.icon-btn{width:40px;height:40px;border-radius:999px;display:grid;place-items:center;border:1px solid var(--border-strong)}
+.icon-btn:hover{background:var(--surface-2)}
+@media(max-width:920px){.nav,.phone{display:none}}
+
+/* hero */
+.hero{position:relative;color:#fff;overflow:hidden;
+  background:radial-gradient(1100px 480px at 82% -12%,rgba(236,160,31,.20),transparent 60%),linear-gradient(160deg,var(--forest-800),var(--forest-900) 58%,#0a1c12)}
+.topo{position:absolute;inset:0;opacity:.5;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cg fill='none' stroke='%23ffffff' stroke-opacity='0.05' stroke-width='1.5'%3E%3Ccircle cx='60' cy='60' r='12'/%3E%3Ccircle cx='60' cy='60' r='28'/%3E%3Ccircle cx='60' cy='60' r='46'/%3E%3C/g%3E%3C/svg%3E")}
+.hero .wrap{position:relative;display:grid;grid-template-columns:1.05fr .95fr;gap:48px;align-items:center;padding-top:64px;padding-bottom:84px}
+.hero h1{font-size:clamp(2.4rem,5vw,3.9rem);color:#fff}
+.hero .honey{color:transparent;background:linear-gradient(100deg,var(--honey-200),var(--honey-400));-webkit-background-clip:text;background-clip:text}
+.hero p.lead{margin-top:18px;font-size:1.12rem;max-width:34rem;color:rgba(255,255,255,.86)}
+.hero .trust{margin-top:26px;display:flex;flex-wrap:wrap;gap:10px 22px;font-size:13.5px}
+.hero .trust span{display:inline-flex;align-items:center;gap:7px}
+@media(max-width:900px){.hero .wrap{grid-template-columns:1fr;gap:32px}}
+
+/* quick quote */
+.qbar{margin-top:26px;display:flex;gap:12px;background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:12px;box-shadow:var(--shadow-lift);flex-wrap:wrap}
+.qfield{flex:1 1 160px;display:flex;align-items:center;gap:8px;background:var(--surface-2);border-radius:12px;padding:10px 14px}
+.qfield input{border:none;background:none;width:100%;color:var(--fg);outline:none}
+.qfield input::placeholder{color:var(--muted)}
+
+/* hero card */
+.hcard{background:color-mix(in srgb,var(--surface) 96%,transparent);color:var(--fg);border:1px solid rgba(255,255,255,.18);border-radius:26px;padding:24px;box-shadow:var(--shadow-lift);max-width:380px;margin-left:auto}
+.hrow{display:flex;align-items:center;gap:12px;background:var(--surface-2);border-radius:12px;padding:11px 14px;margin-top:10px;font-size:14px;font-weight:600}
+.price-box{margin-top:18px;border:1px solid var(--forest-100);background:var(--forest-50);border-radius:16px;padding:16px;display:flex;justify-content:space-between;align-items:flex-end}
+.price-box .amt{font-family:var(--disp);font-size:2.1rem;font-weight:800;color:var(--forest-800)}
+
+/* sections */
+section.blk{padding:76px 0}
+.eyebrow{font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--honey-600);text-align:center}
+.h2{font-size:clamp(1.7rem,3.4vw,2.5rem);text-align:center;margin-top:8px}
+.sub{max-width:40rem;margin:12px auto 0;text-align:center;color:var(--secondary);font-size:1.05rem}
+.grid{display:grid;gap:20px;margin-top:44px}
+.g4{grid-template-columns:repeat(4,1fr)}.g3{grid-template-columns:repeat(3,1fr)}.g2{grid-template-columns:repeat(2,1fr)}
+@media(max-width:900px){.g4{grid-template-columns:repeat(2,1fr)}.g3{grid-template-columns:1fr}.g2{grid-template-columns:1fr}}
+@media(max-width:560px){.g4{grid-template-columns:1fr}}
+.feat{padding:24px}
+.feat .ic{width:48px;height:48px;border-radius:13px;display:grid;place-items:center;background:linear-gradient(135deg,var(--forest-700),var(--forest-500));color:#fff}
+.feat h3{margin-top:16px;font-size:1.15rem}
+.feat p{margin-top:8px;color:var(--secondary);font-size:14.5px}
+.feat .step{position:absolute;top:16px;right:20px;font-family:var(--disp);font-size:2.4rem;font-weight:800;color:var(--surface-3)}
+.svc .ic{background:var(--honey-50);color:var(--honey-600)}
+
+/* pricing */
+.tiers{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:40px}
+@media(max-width:900px){.tiers{grid-template-columns:1fr}}
+.tier{padding:26px;display:flex;flex-direction:column;position:relative}
+.tier.reco{outline:2px solid var(--forest-500);box-shadow:var(--shadow-lift)}
+.tier .top{position:absolute;top:-13px;left:50%;transform:translateX(-50%);background:var(--forest-600);color:#fff;font-size:12px;font-weight:700;padding:4px 12px;border-radius:999px}
+.tier .amt{font-family:var(--disp);font-size:2.4rem;font-weight:800;margin-top:12px}
+.tier ul{list-style:none;margin-top:16px;display:flex;flex-direction:column;gap:9px;flex:1}
+.tier li{display:flex;gap:9px;font-size:14px;color:var(--secondary)}
+.tier li svg{flex:0 0 auto;margin-top:3px;color:var(--forest-500)}
+
+/* why us band */
+.band{background:linear-gradient(135deg,var(--forest-700),var(--forest-500));color:#fff}
+.band .wrap{display:grid;grid-template-columns:.9fr 1.1fr;gap:44px;align-items:center;padding:70px 20px}
+@media(max-width:900px){.band .wrap{grid-template-columns:1fr}}
+.wcard{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:20px}
+.wcard h3{font-size:1.05rem;margin-top:10px}
+.wcard p{margin-top:6px;font-size:14px;color:rgba(255,255,255,.85)}
+
+/* reviews */
+.rev{padding:24px;display:flex;flex-direction:column}
+.stars{display:flex;gap:2px;color:var(--honey-400)}
+.rev blockquote{margin-top:14px;color:var(--secondary);font-size:15px;flex:1}
+.rev .who{margin-top:18px;display:flex;align-items:center;gap:12px;border-top:1px solid var(--border);padding-top:16px}
+.rev .av{width:40px;height:40px;border-radius:999px;display:grid;place-items:center;background:var(--forest-100);color:var(--forest-700);font-weight:800}
+
+/* faq */
+.faq{max-width:760px;margin:40px auto 0;border:1px solid var(--border);border-radius:18px;overflow:hidden;background:var(--surface)}
+.faq details{border-bottom:1px solid var(--border)}
+.faq details:last-child{border-bottom:none}
+.faq summary{list-style:none;cursor:pointer;padding:18px 22px;font-weight:700;display:flex;justify-content:space-between;align-items:center;gap:16px}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary .pm{width:30px;height:30px;border-radius:999px;background:var(--surface-2);display:grid;place-items:center;flex:0 0 auto;transition:.2s}
+.faq details[open] .pm{transform:rotate(45deg);background:var(--forest-600);color:#fff}
+.faq .ans{padding:0 22px 20px;color:var(--secondary);font-size:14.5px}
+
+/* footer */
+footer{background:var(--forest-900);color:var(--forest-50)}
+footer .wrap{padding:56px 20px;display:grid;grid-template-columns:1.4fr 1fr 1fr 1.2fr;gap:36px}
+@media(max-width:900px){footer .wrap{grid-template-columns:1fr 1fr}}
+@media(max-width:560px){footer .wrap{grid-template-columns:1fr}}
+footer h4{font-size:12.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--honey-300);font-family:var(--sans);font-weight:700}
+footer ul{list-style:none;margin-top:16px;display:flex;flex-direction:column;gap:10px;font-size:14px;color:rgba(255,255,255,.82)}
+footer a:hover{color:#fff}
+.foot-bottom{border-top:1px solid rgba(255,255,255,.1);margin-top:8px;padding:20px 20px 40px;font-size:12.5px;color:rgba(255,255,255,.55);text-align:center}
+
+/* ===== app funnel ===== */
+.app-head{padding:36px 0 8px}
+.app-head h1{font-size:clamp(1.7rem,4vw,2.4rem)}
+.stepper{display:flex;align-items:center;gap:8px;margin:26px 0}
+.stepper .st{display:flex;align-items:center;gap:8px;flex:1}
+.dot{width:30px;height:30px;border-radius:999px;display:grid;place-items:center;font-weight:800;font-size:13px;background:var(--surface-3);color:var(--muted);flex:0 0 auto}
+.st.done .dot,.st.cur .dot{background:var(--forest-600);color:#fff}
+.st.cur .dot{box-shadow:0 0 0 4px var(--forest-100)}
+.st .lbl{font-size:13.5px;font-weight:600;color:var(--muted)}
+.st.done .lbl,.st.cur .lbl{color:var(--fg)}
+.st .line{height:2px;flex:1;border-radius:2px;background:var(--surface-3)}
+.st.done .line{background:var(--forest-500)}
+@media(max-width:640px){.st .lbl{display:none}}
+
+.panel{padding:26px}
+.field{margin-bottom:16px}
+.field label{display:block;font-size:14px;font-weight:600;margin-bottom:6px}
+.hint{color:var(--muted);font-weight:400;font-size:12.5px}
+.inp{width:100%;height:44px;border:1px solid var(--border-strong);background:var(--surface);color:var(--fg);border-radius:12px;padding:0 14px;outline:none;transition:.15s}
+.inp:focus{border-color:var(--forest-500);box-shadow:0 0 0 3px color-mix(in srgb,var(--forest-500) 22%,transparent)}
+textarea.inp{height:auto;min-height:104px;padding:12px 14px;resize:vertical}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:560px){.row2{grid-template-columns:1fr}}
+.chipgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+@media(max-width:560px){.chipgrid{grid-template-columns:repeat(2,1fr)}}
+.chip{border:1px solid var(--border-strong);border-radius:12px;padding:12px;text-align:left;transition:.15s;background:var(--surface)}
+.chip:hover{background:var(--surface-2)}
+.chip.sel{border-color:var(--forest-500);background:var(--forest-50);box-shadow:0 0 0 1px var(--forest-500)}
+.chip .t{font-weight:700;font-size:14px;display:block}
+.chip .d{font-size:12px;color:var(--muted)}
+.addon{display:flex;gap:12px;align-items:flex-start;border:1px solid var(--border-strong);border-radius:12px;padding:13px;text-align:left;background:var(--surface);transition:.15s}
+.addon:hover{background:var(--surface-2)}
+.addon.sel{border-color:var(--forest-500);background:var(--forest-50);box-shadow:0 0 0 1px var(--forest-500)}
+.addon .ic{width:36px;height:36px;border-radius:10px;display:grid;place-items:center;background:var(--surface-3);color:var(--secondary);flex:0 0 auto}
+.addon.sel .ic{background:var(--forest-600);color:#fff}
+.nav-btns{display:flex;justify-content:space-between;gap:12px;margin-top:24px}
+
+/* result */
+.result-grid{display:grid;grid-template-columns:1.4fr 1fr;gap:22px;margin-top:8px}
+@media(max-width:900px){.result-grid{grid-template-columns:1fr}}
+.rtier{padding:22px;margin-bottom:16px}
+.rtier.reco{outline:2px solid var(--forest-500);box-shadow:var(--shadow-lift)}
+.sumrow{display:flex;gap:10px;font-size:14px;margin-bottom:9px}
+.sumrow .k{color:var(--muted);width:82px;flex:0 0 auto}
+.sumrow .v{font-weight:600}
+.line{display:flex;justify-content:space-between;gap:12px;font-size:14px;padding:6px 0}
+.line .lab{color:var(--secondary)}.line .sm{font-size:12px;color:var(--muted)}
+
+/* booking */
+.dayscroll{display:flex;gap:8px;overflow-x:auto;padding-bottom:6px}
+.day{flex:0 0 auto;min-width:76px;border:1px solid var(--border-strong);border-radius:12px;padding:9px 4px;text-align:center;background:var(--surface);transition:.15s}
+.day:hover{background:var(--surface-2)}
+.day.sel{border-color:var(--forest-500);background:var(--forest-50);box-shadow:0 0 0 1px var(--forest-500)}
+.day .dow{font-size:11.5px;color:var(--muted)}.day .dn{font-family:var(--disp);font-size:1.25rem;font-weight:800}.day .mo{font-size:10px;color:var(--muted)}
+.slots{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:12px}
+@media(max-width:560px){.slots{grid-template-columns:repeat(2,1fr)}}
+.slot{border:1px solid var(--border-strong);border-radius:12px;padding:10px 4px;font-size:13px;font-weight:600;text-align:center;background:var(--surface)}
+.slot:hover{background:var(--surface-2)}
+.slot.sel{border-color:var(--forest-500);background:var(--forest-600);color:#fff}
+.slot.full{opacity:.38;cursor:not-allowed}
+.summary-side{position:sticky;top:82px}
+.dl{display:flex;justify-content:space-between;font-size:14px;padding:4px 0}
+.secnum{width:34px;height:34px;border-radius:999px;background:var(--forest-600);color:#fff;display:grid;place-items:center;font-weight:800;font-size:14px;flex:0 0 auto}
+
+/* tracking */
+.map{position:relative;height:300px;border-radius:16px;overflow:hidden;background:var(--forest-50);border:1px solid var(--border)}
+:root[data-theme="dark"] .map,:root:not([data-theme="light"]) .map{background:var(--surface-2)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .map{background:var(--surface-2)}}
+.truck{position:absolute;width:44px;height:44px;transform:translate(-50%,-50%);transition:left .9s ease,top .9s ease}
+.truck .b{width:44px;height:44px;border-radius:999px;background:#fff;display:grid;place-items:center;box-shadow:var(--shadow-lift);border:2px solid var(--forest-500)}
+.maplabel{position:absolute;display:inline-flex;align-items:center;gap:5px;background:color-mix(in srgb,var(--surface) 92%,transparent);padding:5px 10px;border-radius:999px;font-size:12px;font-weight:600;box-shadow:var(--shadow-card);backdrop-filter:blur(4px)}
+.tl{display:flex;gap:12px}
+.tl .col{display:flex;flex-direction:column;align-items:center}
+.tl .node{width:32px;height:32px;border-radius:999px;display:grid;place-items:center;border:2px solid var(--border-strong);background:var(--surface);color:var(--muted)}
+.tl .item.done .node{background:var(--forest-600);border-color:var(--forest-600);color:#fff}
+.tl .item.cur .node{box-shadow:0 0 0 4px var(--forest-100)}
+.tl .bar{width:2px;flex:1;min-height:22px;background:var(--border)}
+.tl .item.done .bar{background:var(--forest-500)}
+.tl .item{display:flex;gap:12px}
+.tl .body{padding-bottom:16px}
+.tl .item:not(.done):not(.cur) .body{opacity:.5}
+.pulse{animation:pulse 1.6s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.45}}
+.statgrid{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--border)}
+.statgrid>div{padding:12px;text-align:center;border-right:1px solid var(--border)}
+.statgrid>div:last-child{border-right:none}
+.statgrid .n{font-family:var(--disp);font-size:1.3rem;font-weight:800}
+.statgrid .l{font-size:12px;color:var(--muted)}
+
+.demo-note{background:var(--honey-50);border:1px solid var(--honey-100);color:var(--honey-700);border-radius:12px;padding:10px 14px;font-size:13px;display:flex;gap:8px;align-items:center}
+:root[data-theme="dark"] .demo-note,:root:not([data-theme="light"]) .demo-note{background:color-mix(in srgb,var(--honey-500) 15%,var(--surface));color:var(--honey-200)}
+.center{text-align:center}
+.mt8{margin-top:8px}.mt16{margin-top:16px}.mt24{margin-top:24px}
+.muted{color:var(--muted)}
+svg.i{width:1em;height:1em;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+</style>
+
+<header class="bar">
+  <div class="wrap row">
+    <a class="logo" href="#" onclick="go('home');return false">
+      <svg class="mark" viewBox="0 0 48 48"><rect width="48" height="48" rx="13" fill="#226240"/><circle cx="15" cy="15" r="6" fill="#f2b84a"/><circle cx="33" cy="15" r="6" fill="#f2b84a"/><circle cx="15" cy="15" r="2.6" fill="#1c4e34"/><circle cx="33" cy="15" r="2.6" fill="#1c4e34"/><circle cx="24" cy="27" r="13" fill="#f7d287"/><ellipse cx="24" cy="31" rx="6.5" ry="5" fill="#fdf6e9"/><circle cx="19.5" cy="25" r="1.8" fill="#0f2b1d"/><circle cx="28.5" cy="25" r="1.8" fill="#0f2b1d"/><ellipse cx="24" cy="29.5" rx="2.4" ry="1.8" fill="#0f2b1d"/></svg>
+      <span><span class="name">Brother Bear</span><br><span class="sub">Moving Co.</span></span>
+    </a>
+    <nav class="nav">
+      <a href="#how" onclick="go('home')">How it works</a>
+      <a href="#services" onclick="go('home')">Services</a>
+      <a href="#pricing" onclick="go('home')">Pricing</a>
+      <a href="#reviews" onclick="go('home')">Reviews</a>
+      <a href="#" onclick="go('track');return false">Track my move</a>
+    </nav>
+    <div class="bar-actions">
+      <span class="phone"><svg class="i" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.9.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg>(555) 268-6683</span>
+      <button class="icon-btn" id="themeBtn" onclick="toggleTheme()" aria-label="Toggle theme"><svg class="i" viewBox="0 0 24 24" id="themeIcon"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M1 12h2M21 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4"/></svg></button>
+      <button class="btn btn-accent" onclick="startQuote()">Get instant quote</button>
+    </div>
+  </div>
+</header>
+
+<!-- ============ HOME ============ -->
+<div id="home" class="screen active">
+  <section class="hero">
+    <div class="topo"></div>
+    <div class="wrap">
+      <div>
+        <span class="badge badge-glass">✦ Instant online quotes — no waiting for a callback</span>
+        <h1 class="mt16">Your move, <span class="honey">handled with care.</span></h1>
+        <p class="lead">Snap a few photos, get an instant itemized quote, book your crew, and track your move in real time. Brother Bear Moving makes moving day the easiest part.</p>
+        <div class="qbar">
+          <div class="qfield"><svg class="i" viewBox="0 0 24 24" style="color:var(--forest-500)"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg><input id="qFrom" placeholder="Moving from (ZIP or city)"></div>
+          <div class="qfield"><svg class="i" viewBox="0 0 24 24" style="color:var(--honey-500)"><path d="M1 3h15v13H1zM16 8h4l3 3v5h-7M5.5 21a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5zM18.5 21a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5z"/></svg><input id="qTo" placeholder="Moving to (ZIP or city)"></div>
+          <button class="btn btn-accent btn-lg" onclick="startQuote(true)">Get my quote →</button>
+        </div>
+        <div class="trust">
+          <span>★ <strong>4.9</strong> (412 reviews)</span>
+          <span>🛡 Licensed &amp; insured</span>
+          <span>👍 9,000+ moves completed</span>
+        </div>
+      </div>
+      <div>
+        <div class="hcard">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <span style="font-size:13px;font-weight:700;color:var(--secondary)">Your instant estimate</span>
+            <span class="badge badge-forest"><span class="pulse" style="width:8px;height:8px;border-radius:999px;background:#22c55e;display:inline-block"></span> Live</span>
+          </div>
+          <div class="hrow"><svg class="i" viewBox="0 0 24 24" style="color:var(--forest-500)"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg> 2-bedroom home · local</div>
+          <div class="hrow"><svg class="i" viewBox="0 0 24 24" style="color:var(--forest-500)"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg> Crew of 3 · ~4.5 hrs</div>
+          <div class="hrow"><svg class="i" viewBox="0 0 24 24" style="color:var(--forest-500)"><path d="M1 3h15v13H1zM16 8h4l3 3v5h-7"/></svg> Truck, labor &amp; mileage</div>
+          <div class="price-box"><div><div style="font-size:12px;font-weight:600;color:var(--forest-600)">From</div><div class="amt">$1,180</div></div><span class="muted" style="font-size:13px">all-in</span></div>
+          <button class="btn btn-accent btn-block mt16" onclick="startQuote()">Build my real quote →</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- trust bar -->
+  <section style="background:var(--surface);border-bottom:1px solid var(--border)">
+    <div class="wrap grid g4" style="margin:0;padding:28px 20px;gap:20px">
+      <div style="display:flex;gap:12px;align-items:center"><span class="feat ic" style="width:44px;height:44px;background:var(--forest-50);color:var(--forest-600)">$</span><div><strong>Upfront</strong><br><span class="muted" style="font-size:13.5px">Transparent, itemized pricing</span></div></div>
+      <div style="display:flex;gap:12px;align-items:center"><span class="feat ic" style="width:44px;height:44px;background:var(--forest-50);color:var(--forest-600)">📍</span><div><strong>Real-time</strong><br><span class="muted" style="font-size:13.5px">Live tracking on move day</span></div></div>
+      <div style="display:flex;gap:12px;align-items:center"><span class="feat ic" style="width:44px;height:44px;background:var(--forest-50);color:var(--forest-600)">✓</span><div><strong>Vetted</strong><br><span class="muted" style="font-size:13.5px">Background-checked crews</span></div></div>
+      <div style="display:flex;gap:12px;align-items:center"><span class="feat ic" style="width:44px;height:44px;background:var(--forest-50);color:var(--forest-600)">⚡</span><div><strong>2 min</strong><br><span class="muted" style="font-size:13.5px">Book online, any time</span></div></div>
+    </div>
+  </section>
+
+  <!-- how -->
+  <section class="blk wrap" id="how">
+    <p class="eyebrow">How it works</p>
+    <h2 class="h2">From clutter to keys in four steps</h2>
+    <p class="sub">We turned the most stressful day into a few taps. No phone tag, no vague estimates, no surprises.</p>
+    <div class="grid g4" id="howGrid"></div>
+    <div class="center mt24"><button class="btn btn-primary btn-lg" onclick="startQuote()">Start my instant quote →</button></div>
+  </section>
+
+  <!-- services -->
+  <section class="blk" id="services" style="background:var(--surface-2)">
+    <div class="wrap">
+      <p class="eyebrow">Services</p>
+      <h2 class="h2">Whatever you're moving, we've got it</h2>
+      <p class="sub">Full-service crews for homes, apartments and offices — plus the specialty care your prized items deserve.</p>
+      <div class="grid g3" id="svcGrid"></div>
+    </div>
+  </section>
+
+  <!-- pricing -->
+  <section class="blk wrap" id="pricing">
+    <p class="eyebrow">Transparent pricing</p>
+    <h2 class="h2">Three tiers. One honest price.</h2>
+    <p class="sub">Pick the level of service that fits. Every tier is fully itemized in your quote.</p>
+    <p class="center muted mt8" style="font-size:13px">Example: a 2-bedroom local move · your real quote is tailored to your items.</p>
+    <div class="tiers" id="homeTiers"></div>
+  </section>
+
+  <!-- why -->
+  <section class="band">
+    <div class="wrap">
+      <div>
+        <span class="badge badge-glass">Why Brother Bear</span>
+        <h2 class="mt16" style="font-size:clamp(1.7rem,3.4vw,2.4rem);color:#fff">Moving is stressful. We make it feel handled.</h2>
+        <p style="margin-top:14px;color:rgba(255,255,255,.9)">We're a local, family-run crew that treats your stuff like our own. Modern tools, old-fashioned care — that's the Brother Bear way.</p>
+        <div style="margin-top:22px;display:flex;gap:12px;flex-wrap:wrap">
+          <button class="btn btn-white btn-lg" onclick="startQuote()">Get instant quote</button>
+          <span class="phone" style="color:#fff;border:1px solid rgba(255,255,255,.25);border-radius:999px;padding:0 22px;height:52px">📞 (555) 268-6683</span>
+        </div>
+      </div>
+      <div class="grid g2" id="whyGrid" style="margin-top:0"></div>
+    </div>
+  </section>
+
+  <!-- reviews -->
+  <section class="blk wrap" id="reviews">
+    <p class="eyebrow">Loved by neighbors</p>
+    <h2 class="h2">4.9 stars across 412+ reviews</h2>
+    <p class="sub">We're proud of our reputation — and we earn it one careful move at a time.</p>
+    <div class="grid g3" id="revGrid"></div>
+  </section>
+
+  <!-- faq -->
+  <section class="blk wrap" style="padding-top:0">
+    <p class="eyebrow">Good to know</p>
+    <h2 class="h2">Questions, answered</h2>
+    <div class="faq" id="faq"></div>
+  </section>
+
+  <!-- cta -->
+  <section class="hero" style="padding:0">
+    <div class="topo" style="opacity:.4"></div>
+    <div class="wrap center" style="position:relative;padding:64px 20px;display:block">
+      <h2 style="font-size:clamp(1.7rem,3.4vw,2.5rem);color:#fff">Ready for the easiest move of your life?</h2>
+      <p style="margin:12px auto 0;max-width:34rem;color:rgba(255,255,255,.9)">Get your instant, no-obligation quote in about two minutes. Book when you're ready.</p>
+      <div class="mt24" style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap"><button class="btn btn-accent btn-lg" onclick="startQuote()">Get my instant quote →</button><button class="btn btn-white btn-lg" onclick="go('track')">Track a move</button></div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="wrap">
+      <div>
+        <div class="logo"><svg class="mark" viewBox="0 0 48 48"><rect width="48" height="48" rx="13" fill="#2f7d4f"/><circle cx="15" cy="15" r="6" fill="#f2b84a"/><circle cx="33" cy="15" r="6" fill="#f2b84a"/><circle cx="24" cy="27" r="13" fill="#f7d287"/><ellipse cx="24" cy="31" rx="6.5" ry="5" fill="#fdf6e9"/><circle cx="19.5" cy="25" r="1.8" fill="#0f2b1d"/><circle cx="28.5" cy="25" r="1.8" fill="#0f2b1d"/><ellipse cx="24" cy="29.5" rx="2.4" ry="1.8" fill="#0f2b1d"/></svg><span><span class="name" style="color:#fff">Brother Bear</span><br><span class="sub">Moving Co.</span></span></div>
+        <p style="margin-top:14px;font-size:14px;color:rgba(255,255,255,.75);max-width:16rem">Moving made easy — handled with bear-hug care.</p>
+        <div style="margin-top:14px" class="badge" style="background:rgba(255,255,255,.1);color:#fff">★ 4.9 · 412 Google reviews</div>
+      </div>
+      <div><h4>Company</h4><ul><li><a onclick="startQuote()" href="#">Get an instant quote</a></li><li><a onclick="go('track');return false" href="#">Track my move</a></li><li><a href="#services" onclick="go('home')">Services</a></li><li><a href="#pricing" onclick="go('home')">Pricing</a></li></ul></div>
+      <div><h4>Service areas</h4><ul><li>Asheville</li><li>Hendersonville</li><li>Black Mountain</li><li>Weaverville</li><li>Arden · Fletcher</li></ul></div>
+      <div><h4>Get in touch</h4><ul><li>📞 (555) 268-6683</li><li>✉ hello@brotherbearmoving.com</li><li>📍 1200 Timber Ridge Rd, Asheville, NC</li><li>🕑 Mon–Sat, 7AM–7PM</li></ul></div>
+    </div>
+    <div class="foot-bottom">© 2026 Brother Bear Moving · Licensed &amp; insured · USDOT 3921004 · Instant quotes are estimates, confirmed after a quick review. Deposits refundable up to 48h before your move.</div>
+  </footer>
+</div>
+
+<!-- ============ QUOTE WIZARD ============ -->
+<div id="quote" class="screen"><div class="wrap" style="max-width:760px">
+  <div class="app-head center"><span class="badge badge-forest">✦ Instant quote</span><h1 class="mt8">Let's price your move</h1><p class="muted">Answer a few quick questions — get an itemized quote on the spot.</p></div>
+  <div class="stepper" id="stepper"></div>
+  <div class="card panel" id="wizPanel"></div>
+  <p class="center muted mt16" style="font-size:12.5px">🛡 Free &amp; no obligation. This is an interactive demo.</p>
+</div></div>
+
+<!-- ============ RESULT ============ -->
+<div id="result" class="screen"><div class="wrap">
+  <div class="app-head"><span class="badge badge-forest">✦ Your instant quote is ready</span><h1 class="mt8">Choose your service level</h1><p class="muted" id="resRef"></p></div>
+  <div class="result-grid">
+    <div id="resTiers"></div>
+    <div><div class="card panel" id="resSummary"></div><div class="card panel mt16" id="resBreakdown"></div></div>
+  </div>
+</div></div>
+
+<!-- ============ BOOKING ============ -->
+<div id="book" class="screen"><div class="wrap">
+  <div class="app-head"><h1>Confirm &amp; schedule your move</h1><p class="muted" id="bookRef"></p></div>
+  <div class="result-grid">
+    <div>
+      <div class="card panel">
+        <div style="display:flex;gap:12px;align-items:center;margin-bottom:16px"><span class="secnum">1</span><h3 style="font-size:1.1rem">Pick your date &amp; arrival window</h3></div>
+        <div class="dayscroll" id="dayScroll"></div>
+        <div class="slots" id="slotGrid"></div>
+      </div>
+      <div class="card panel mt16">
+        <div style="display:flex;gap:12px;align-items:center;margin-bottom:16px"><span class="secnum">2</span><h3 style="font-size:1.1rem">Create your account</h3></div>
+        <div class="row2"><div class="field"><label>Full name</label><input class="inp" id="bkName" value="Jordan Bennett"></div><div class="field"><label>Phone <span class="hint">optional</span></label><input class="inp" id="bkPhone" placeholder="(555) 123-4567"></div></div>
+        <div class="field"><label>Email</label><input class="inp" id="bkEmail" value="jordan@example.com"></div>
+      </div>
+      <div class="card panel mt16">
+        <div style="display:flex;gap:12px;align-items:center;margin-bottom:16px"><span class="secnum">3</span><h3 style="font-size:1.1rem">Secure your booking with a deposit</h3></div>
+        <div class="demo-note" style="margin-bottom:14px">🔒 Demo checkout — no real card is charged.</div>
+        <div class="field"><label>Card number</label><input class="inp" id="bkCard" value="4242 4242 4242 4242"></div>
+        <div class="row2"><div class="field"><label>Expiry</label><input class="inp" value="12/28"></div><div class="field"><label>CVC</label><input class="inp" value="123"></div></div>
+      </div>
+    </div>
+    <div><div class="card panel summary-side" id="bookSummary"></div></div>
+  </div>
+</div></div>
+
+<!-- ============ CONFIRM ============ -->
+<div id="confirm" class="screen"><div class="wrap" style="max-width:720px">
+  <div class="center app-head"><div style="margin:0 auto;width:64px;height:64px;border-radius:999px;background:var(--forest-100);color:var(--forest-600);display:grid;place-items:center;font-size:30px">🎉</div><h1 class="mt16">You're booked!</h1><p class="muted" id="confMsg"></p></div>
+  <div class="card panel" id="confCard"></div>
+  <div class="nav-btns"><button class="btn btn-primary btn-block btn-lg" onclick="go('track')">📍 Track my move</button></div>
+</div></div>
+
+<!-- ============ TRACKING ============ -->
+<div id="track" class="screen"><div class="wrap">
+  <div class="app-head"><span class="badge badge-forest">📍 Live move tracking</span><h1 class="mt8" id="trkTitle">Tracking your move</h1></div>
+  <div class="result-grid">
+    <div>
+      <div class="card" style="overflow:hidden">
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 18px;border-bottom:1px solid var(--border)">
+          <span id="trkLive" style="font-weight:700;font-size:14px;color:var(--forest-700);display:inline-flex;align-items:center;gap:6px"></span>
+          <span class="badge badge-forest" id="trkEta"></span>
+        </div>
+        <div class="map">
+          <svg viewBox="0 0 400 300" style="position:absolute;inset:0;width:100%;height:100%" preserveAspectRatio="none">
+            <defs><pattern id="g" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M40 0H0V40" fill="none" stroke="var(--forest-200)" stroke-width="1" opacity=".5"/></pattern></defs>
+            <rect width="400" height="300" fill="url(#g)"/>
+            <path id="route" d="M40 250 C 140 250 150 120 220 110 S 330 60 360 55" fill="none" stroke="var(--forest-200)" stroke-width="6" stroke-linecap="round"/>
+            <path id="routeDone" d="M40 250 C 140 250 150 120 220 110 S 330 60 360 55" fill="none" stroke="var(--forest-600)" stroke-width="6" stroke-linecap="round"/>
+            <circle cx="40" cy="250" r="7" fill="var(--forest-600)" stroke="#fff" stroke-width="3"/>
+            <circle cx="360" cy="55" r="7" fill="var(--honey-500)" stroke="#fff" stroke-width="3"/>
+          </svg>
+          <div class="truck" id="truck"><div class="b"><svg class="i" viewBox="0 0 24 24" style="color:var(--forest-700);width:20px;height:20px"><path d="M1 3h15v13H1zM16 8h4l3 3v5h-7M5.5 21a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5zM18.5 21a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5z"/></svg></div></div>
+          <div class="maplabel" style="bottom:12px;left:12px">📍 <span id="trkFrom">Pickup</span></div>
+          <div class="maplabel" style="top:12px;right:12px"><span id="trkTo">Destination</span> 📍</div>
+        </div>
+        <div class="statgrid"><div><div class="n" id="trkDist">—</div><div class="l">Distance</div></div><div><div class="n" id="trkCrewN">—</div><div class="l">Crew</div></div><div><div class="n" id="trkProg">0%</div><div class="l">Progress</div></div></div>
+      </div>
+      <div class="card panel mt16">
+        <div style="display:flex;gap:12px;align-items:center"><span id="trkStageIc" style="width:48px;height:48px;border-radius:13px;display:grid;place-items:center;background:linear-gradient(135deg,var(--forest-700),var(--forest-500));color:#fff;font-size:22px">📅</span><div><div style="font-weight:800;font-size:1.1rem" id="trkStageT"></div><div class="muted" style="font-size:14px" id="trkStageD"></div></div></div>
+        <div class="demo-note mt16" style="justify-content:space-between"><span>Demo: simulate the next crew update</span><button class="btn btn-outline" style="height:36px" id="advBtn" onclick="advance()">⏩ Next update</button></div>
+      </div>
+    </div>
+    <div>
+      <div class="card panel" id="crewCard"></div>
+      <div class="card panel mt16"><h3 style="font-size:1.05rem">Move timeline</h3><div class="tl mt16" id="timeline"></div></div>
+    </div>
+  </div>
+</div></div>
+
+<script>
+/* ---------- data ---------- */
+const HOME_SIZES=[
+ {v:'STUDIO',l:'Studio',r:'Studio apartment',vol:350},
+ {v:'ONE_BED',l:'1 Bedroom',r:'1-bed home / apt',vol:550},
+ {v:'TWO_BED',l:'2 Bedroom',r:'2-bed home / apt',vol:900},
+ {v:'THREE_BED',l:'3 Bedroom',r:'3-bed house',vol:1400},
+ {v:'FOUR_BED_PLUS',l:'4+ Bedroom',r:'4+ bed house',vol:2000},
+ {v:'OFFICE',l:'Office',r:'Commercial move',vol:1200},
+ {v:'OTHER',l:'A few items',r:'Small / partial',vol:200}];
+const ADDONS=[
+ {id:'packing',n:'Full packing service',b:'We box everything for you.',ic:'📦'},
+ {id:'unpacking',n:'Unpacking at destination',b:'We unbox & set up.',ic:'📭'},
+ {id:'storage',n:'Storage (per month)',b:'Climate-controlled storage.',ic:'🏬'},
+ {id:'specialty',n:'Specialty items',b:'Pianos, safes, gym gear.',ic:'🎹'},
+ {id:'insurance',n:'Full-value protection',b:'Full replacement coverage.',ic:'🛡'},
+ {id:'disassembly',n:'Furniture disassembly',b:'Taken apart & rebuilt.',ic:'🔧'}];
+const CFG={baseFee:149,ratePerHourPerMover:65,ratePerMile:1.25,freeMileRadius:25,ratePerCuFt:.55,stairsFeePerFlight:45,noElevatorSurcharge:35,depositPercent:.2,packingFlat:280,packingService:.4,storageMonthly:180,specialtyItemFee:120,insuranceFullValue:.015,tierBasicMult:1,tierStandardMult:1.28,tierPremiumMult:1.6};
+const BULKY={couch:55,sofa:55,sectional:90,bed:45,mattress:35,dresser:40,wardrobe:55,fridge:60,refrigerator:60,washer:35,dryer:35,desk:30,bookshelf:30,table:35,tv:15,treadmill:45,piano:80};
+const SPECIAL=['piano','safe','treadmill','pool table','hot tub','antique','aquarium','gym','peloton'];
+const STAGES=[
+ {s:'CONFIRMED',t:'Booking confirmed',d:"Your move is on the calendar. We'll be in touch before the big day.",ic:'📅',p:0},
+ {s:'CREW_ASSIGNED',t:'Crew assigned',d:'Your dedicated moving team is locked in and briefed.',ic:'👥',p:.12},
+ {s:'EN_ROUTE',t:'Crew en route',d:'Your movers are on their way to your pickup address.',ic:'🚚',p:.3},
+ {s:'LOADING',t:'Loading',d:"We're carefully wrapping and loading your belongings.",ic:'📦',p:.45},
+ {s:'IN_TRANSIT',t:'In transit',d:"Everything's loaded and on the road to your new place.",ic:'🧭',p:.72},
+ {s:'UNLOADING',t:'Unloading',d:"We're unloading and placing items where you want them.",ic:'📥',p:.92},
+ {s:'COMPLETED',t:'Move complete',d:'All done! Welcome home. Thanks for moving with us.',ic:'🎉',p:1}];
+const CREWS=[{name:'Team Grizzly',lead:'Tasha',size:4,phone:'(555) 268-1002'},{name:'Team Kodiak',lead:'Marcus',size:3,phone:'(555) 268-1001'},{name:'Team Panda',lead:'Diego',size:2,phone:'(555) 268-1003'}];
+const money=n=>'$'+Math.round(n).toLocaleString();
+const ref=p=>{const c='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';let s='';for(let i=0;i<5;i++)s+=c[Math.floor(Math.random()*c.length)];return p+'-'+s};
+
+/* ---------- pricing engine (ported) ---------- */
+function analyze(homeSize,desc){
+  desc=(desc||'').toLowerCase();let vol=(HOME_SIZES.find(h=>h.v===homeSize)||{vol:600}).vol;let spec=0;const items=[];
+  const words={a:1,an:1,one:1,two:2,three:3,four:4,five:5,six:6,seven:7,eight:8};
+  for(const kw in BULKY){const re=new RegExp('(\\d+|a|an|one|two|three|four|five|six|seven|eight)?\\s*'+kw+'s?','g');let m,c=0;while((m=re.exec(desc))&&c<20){const q=m[1]?(words[m[1]]??(parseInt(m[1])||1)):1;c+=q}if(c>0){vol+=BULKY[kw]*c*.5;items.push({name:kw[0].toUpperCase()+kw.slice(1),q:c})}}
+  const bx=desc.match(/(\d+)\s*(?:boxes|cartons)/);if(bx){vol+=parseInt(bx[1])*3;items.push({name:'Boxes',q:parseInt(bx[1])})}
+  for(const kw of SPECIAL)if(desc.includes(kw))spec++;
+  vol=Math.round(vol);const crew=vol<500?2:vol<1800?3:4;const lh=Math.max(2,Math.round(vol/70/crew*2)/2);
+  return{vol,weight:Math.round(vol*7),crew,laborHours:lh,spec,items};
+}
+function estDist(a,b){a=parseInt((a||'').slice(0,5));b=parseInt((b||'').slice(0,5));if(isNaN(a)||isNaN(b))return 14;if(a===b)return 8;const d=Math.abs(a-b);return Math.floor(a/100)===Math.floor(b/100)?Math.min(45,6+(d%100)*.6):Math.min(1200,Math.round(15+d*.9))}
+function compute(inp){
+  const c=CFG;const labor=inp.laborHours*inp.crew*c.ratePerHourPerMover;const volc=inp.vol*c.ratePerCuFt;
+  const bm=Math.max(0,inp.dist-c.freeMileRadius);const mile=bm*c.ratePerMile;
+  const oF=inp.oElev?0:Math.max(0,inp.oFloor-1),dF=inp.dElev?0:Math.max(0,inp.dFloor-1);const stairs=(oF+dF)*c.stairsFeePerFlight;
+  const walk=((!inp.oElev&&inp.oFloor>=3)||(!inp.dElev&&inp.dFloor>=3))?c.noElevatorSurcharge:0;
+  const li=[{lab:'Truck, dispatch & equipment',amt:c.baseFee},
+    {lab:'Loading & unloading labor',sm:inp.laborHours.toFixed(1)+' hrs × '+inp.crew+' movers × $'+c.ratePerHourPerMover+'/hr',amt:labor},
+    {lab:'Volume handling',sm:Math.round(inp.vol).toLocaleString()+' cu ft × $'+c.ratePerCuFt.toFixed(2),amt:volc}];
+  if(mile>0)li.push({lab:'Travel / mileage',sm:Math.round(bm)+' mi past first '+c.freeMileRadius+' × $'+c.ratePerMile.toFixed(2),amt:mile});
+  if(stairs>0)li.push({lab:'Stairs',sm:(oF+dF)+' flight(s) × $'+c.stairsFeePerFlight,amt:stairs});
+  if(walk>0)li.push({lab:'Walk-up surcharge (3+ floors)',amt:walk});
+  const base=c.baseFee+labor+volc+mile+stairs+walk;
+  const addonItems=[];const A=inp.addons;
+  if(A.includes('packing'))addonItems.push({lab:'Full packing service',sm:'Materials + crew boxing',amt:c.packingFlat+base*c.packingService*.5});
+  if(A.includes('unpacking'))addonItems.push({lab:'Unpacking at destination',amt:c.packingFlat*.65});
+  if(A.includes('storage'))addonItems.push({lab:'Storage (1 month)',amt:c.storageMonthly});
+  if(A.includes('specialty')&&inp.spec>0)addonItems.push({lab:'Specialty item handling',sm:inp.spec+' item(s)',amt:c.specialtyItemFee*inp.spec});
+  if(A.includes('insurance'))addonItems.push({lab:'Full-value protection',amt:Math.max(120,(inp.declared||20000)*c.insuranceFullValue)});
+  if(A.includes('disassembly'))addonItems.push({lab:'Furniture disassembly & reassembly',amt:c.stairsFeePerFlight*2.2});
+  const addTot=addonItems.reduce((s,i)=>s+i.amt,0);
+  const mk=(id,name,tag,mult,inc,reco)=>{const price=Math.round(base*mult+addTot);const dep=Math.round(price*c.depositPercent);return{id,name,tag,price,deposit:dep,balance:price-dep,inc,reco:!!reco}};
+  const tiers=[
+    mk('basic','Essential','Muscle + truck. You pack, we move.',c.tierBasicMult,['2–3 professional movers','Truck, fuel & basic equipment','Blankets & shrink-wrap','Basic liability coverage','Load, transport & unload']),
+    mk('standard','Complete','The full-service favorite — most people pick this.',c.tierStandardMult,['Everything in Essential','Furniture disassembly & reassembly','Wardrobe boxes & mattress bags','Floor & doorway protection','$10,000 released-value coverage'],true),
+    mk('premium','White-Glove','Zero lifting, zero stress — we handle it all.',c.tierPremiumMult,['Everything in Complete','Full packing & unpacking','All materials included','Full-value protection','Dedicated coordinator + live tracking'])];
+  return{lineItems:li,addonItems,baseSubtotal:Math.round(base),addTot,tiers};
+}
+
+/* ---------- state ---------- */
+let S={from:'',to:'',oZip:'',dZip:'',homeSize:'TWO_BED',oFloor:1,dFloor:1,oElev:false,dElev:false,desc:'',addons:[],photos:0,step:0,analysis:null,dist:0,breakdown:null,ref:'',tier:'standard',date:'',slot:'',booking:null,stageIdx:0,crew:null};
+const $=id=>document.getElementById(id);
+function go(scr){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));$(scr).classList.add('active');window.scrollTo({top:0,behavior:'auto'});if(scr==='home'&&location.hash){const el=document.querySelector(location.hash);if(el)setTimeout(()=>el.scrollIntoView(),40)}}
+
+/* ---------- home content ---------- */
+const HOW=[['📸','1','Describe & snap',"Tell us your home size and items — or just snap photos. Our AI sizes up the job."],['📄','2','Get an instant quote','See an itemized, all-in price in seconds with three service tiers.'],['📅','3','Book & pay deposit','Pick your date and window, create an account, lock it in with a small deposit.'],['📍','4','Track your move','Follow your crew live on move day — from en route to delivered.']];
+const SVC=[['🏠','Local moving','Same-city and nearby moves, priced by the job — not a mystery hourly meter.'],['🚚','Long-distance','Cross-state and cross-country relocations with real-time tracking the whole way.'],['📦','Packing & unpacking','Let our crew box everything with pro materials — and unpack you at the other end.'],['🏢','Office & commercial','After-hours and weekend business moves that keep downtime to a minimum.'],['🏬','Storage','Clean, climate-controlled storage when move-out and move-in don\'t line up.'],['🎹','Specialty items','Pianos, safes, gym equipment, antiques and art — handled with extra care.']];
+const WHY=[['💵','No hidden fees','Your quote is itemized and all-in. The price you book is the price you pay.'],['🛡','Licensed & insured','Fully covered. Damage protection on every move.'],['📍','Live tracking','Know exactly where your crew is and when they\'ll arrive.'],['👥','Vetted crews','Background-checked, trained, and genuinely friendly movers.'],['🕑','Flexible scheduling','Book online any time, with windows that fit your day.'],['🧰','Full-service','Add packing, storage or specialty handling in a couple of taps.']];
+const REV=[['Marcus T.','Asheville, NC','The instant quote was spot-on and the crew was unbelievably fast and careful. Watching them head over on move day was the cherry on top.'],['Priya S.','Hendersonville, NC','Booked the whole thing online in ten minutes. No pushy sales call, clear pricing, and they wrapped my grandmother\'s china like it was theirs.'],['Dylan R.','Black Mountain, NC','Third time using Brother Bear. Fair prices, real people, zero drama. The tracking link kept my whole family in the loop.']];
+const FAQ=[['How accurate is the instant quote?','Very. We analyze your home size, items and photos to estimate volume, crew and hours, then price it against our published rates. It\'s a real, itemized quote — confirmed with a quick call before your move.'],['Why do you ask for photos?','Photos let us size up bulky and specialty items so your quote is accurate and there are no surprises on move day. They\'re optional — you can also just describe your items.'],['Is the deposit refundable?','Yes — the 20% deposit locks in your crew and date, is applied to your final bill, and is fully refundable up to 48 hours before your move.'],['Can I really track my movers?','Yes. Once your move is underway you get a live tracking link showing your crew\'s status and ETA from "en route" through "complete".']];
+const CHK='<svg class="i" viewBox="0 0 24 24" style="width:16px;height:16px"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="M22 4 12 14.01l-3-3"/></svg>';
+
+function renderHome(){
+  $('howGrid').innerHTML=HOW.map(h=>`<div class="card feat" style="position:relative"><span class="step">${h[1]}</span><span class="ic">${h[0]}</span><h3>${h[2]}</h3><p>${h[3]}</p></div>`).join('');
+  $('svcGrid').innerHTML=SVC.map(s=>`<div class="card feat svc"><span class="ic">${s[0]}</span><h3>${s[1]}</h3><p>${s[2]}</p></div>`).join('');
+  $('whyGrid').innerHTML=WHY.map(w=>`<div class="wcard"><div style="font-size:22px">${w[0]}</div><h3>${w[1]}</h3><p>${w[2]}</p></div>`).join('');
+  $('revGrid').innerHTML=REV.map(r=>`<figure class="card rev"><div class="stars">★★★★★</div><blockquote>“${r[2]}”</blockquote><figcaption class="who"><span class="av">${r[0][0]}</span><div><div style="font-weight:700;font-size:14px">${r[0]}</div><div class="muted" style="font-size:12px">${r[1]}</div></div></figcaption></figure>`).join('');
+  $('faq').innerHTML=FAQ.map((f,i)=>`<details ${i===0?'open':''}><summary>${f[0]}<span class="pm">+</span></summary><div class="ans">${f[1]}</div></details>`).join('');
+  const b=compute({vol:900,laborHours:4.5,crew:3,dist:18,oFloor:1,dFloor:1,oElev:false,dElev:false,addons:[],spec:0});
+  $('homeTiers').innerHTML=b.tiers.map(t=>tierCard(t,()=>startQuote())).join('');
+}
+function tierCard(t,onClick){return `<div class="card tier ${t.reco?'reco':''}">${t.reco?'<span class="top">Most popular</span>':''}<h3 style="color:var(--forest-800)">${t.name}</h3><p class="muted" style="min-height:40px;font-size:14px">${t.tag}</p><div class="amt">${money(t.price)}</div><div class="muted" style="font-size:12px">est. all-in</div><ul>${t.inc.map(i=>`<li>${CHK}<span>${i}</span></li>`).join('')}</ul><button class="btn ${t.reco?'btn-primary':'btn-outline'} btn-block mt16" onclick="(${onClick.toString()})()">Get this quote</button></div>`}
+
+/* ---------- wizard ---------- */
+const STEPS=['Route','Home & access','Your items','Contact'];
+function startQuote(fromHero){
+  if(fromHero){S.from=$('qFrom').value;S.to=$('qTo').value;if(/^\d{3,5}$/.test(S.from.trim())){S.oZip=S.from.trim()}if(/^\d{3,5}$/.test(S.to.trim())){S.dZip=S.to.trim()}}
+  S.step=0;go('quote');renderWizard();
+}
+function renderStepper(){$('stepper').innerHTML=STEPS.map((l,i)=>`<div class="st ${i<S.step?'done':''} ${i===S.step?'cur':''}"><div style="display:flex;align-items:center;gap:8px"><span class="dot">${i+1}</span><span class="lbl">${l}</span></div>${i<STEPS.length-1?'<span class="line"></span>':''}</div>`).join('')}
+function renderWizard(){
+  renderStepper();const p=$('wizPanel');
+  if(S.step===0){p.innerHTML=`
+    <h2 style="font-size:1.5rem">Where are you moving?</h2><p class="muted" style="margin:6px 0 18px">We'll estimate travel and confirm we serve your area.</p>
+    <div class="field"><label>Moving from</label><div class="row2" style="grid-template-columns:1fr 120px"><input class="inp" id="w_from" placeholder="Street or city" value="${S.from}"><input class="inp" id="w_ozip" placeholder="ZIP" value="${S.oZip}"></div></div>
+    <div class="field"><label>Moving to</label><div class="row2" style="grid-template-columns:1fr 120px"><input class="inp" id="w_to" placeholder="Street or city" value="${S.to}"><input class="inp" id="w_dzip" placeholder="ZIP" value="${S.dZip}"></div></div>
+    <div class="field"><label>What size is your current place?</label><div class="chipgrid">${HOME_SIZES.map(h=>`<button class="chip ${S.homeSize===h.v?'sel':''}" onclick="S.homeSize='${h.v}';renderWizard()"><span class="t">${h.l}</span><span class="d">${h.r}</span></button>`).join('')}</div></div>`;
+  }else if(S.step===1){p.innerHTML=`
+    <h2 style="font-size:1.5rem">Access & timing</h2><p class="muted" style="margin:6px 0 18px">Stairs and elevators help us plan the crew and get your price right.</p>
+    <div class="row2">${accessBlock('Pickup','o')}${accessBlock('Destination','d')}</div>
+    <div class="field" style="margin-top:16px"><label>Preferred move date <span class="hint">optional</span></label><input class="inp" type="date" id="w_date"></div>`;
+  }else if(S.step===2){p.innerHTML=`
+    <h2 style="font-size:1.5rem">What are we moving?</h2><p class="muted" style="margin:6px 0 18px">Describe your items — our AI estimates the volume and crew so your quote is accurate.</p>
+    <div class="field"><label>Describe your items <span class="hint">the more detail, the better</span></label><textarea class="inp" id="w_desc" placeholder="e.g. 2 sofas, a king bed, dining table, fridge, washer/dryer, ~30 boxes, and a piano.">${S.desc}</textarea></div>
+    <div class="field"><label>Add photos <span class="hint">optional · demo simulates analysis</span></label><button class="chip" style="width:100%;text-align:center;border-style:dashed;padding:22px" onclick="S.photos++;renderWizard()">⬆ Tap to add a photo ${S.photos?`· ${S.photos} added`:''}</button></div>
+    <div class="field"><label>Add any extras (optional)</label><div class="grid g2" style="margin-top:0;gap:10px">${ADDONS.map(a=>`<button class="addon ${S.addons.includes(a.id)?'sel':''}" onclick="toggleAddon('${a.id}')"><span class="ic">${a.ic}</span><span><span style="font-weight:700;font-size:14px;display:block">${a.n}</span><span class="muted" style="font-size:12px">${a.b}</span></span></button>`).join('')}</div></div>`;
+  }else{p.innerHTML=`
+    <h2 style="font-size:1.5rem">Where should we send your quote?</h2><p class="muted" style="margin:6px 0 18px">No spam, ever. We'll email your quote and only call to confirm details.</p>
+    <div class="field"><label>Full name</label><input class="inp" id="w_name" placeholder="Jordan Bennett" value="Jordan Bennett"></div>
+    <div class="row2"><div class="field"><label>Email</label><input class="inp" id="w_email" value="jordan@example.com"></div><div class="field"><label>Phone <span class="hint">optional</span></label><input class="inp" placeholder="(555) 123-4567"></div></div>
+    <div class="demo-note">✦ Your instant quote is generated the moment you submit — you'll see itemized pricing and three tiers next.</div>`;}
+  p.insertAdjacentHTML('beforeend',`<div class="nav-btns"><button class="btn btn-ghost" onclick="wizBack()" ${S.step===0?'style="visibility:hidden"':''}>← Back</button>${S.step<3?'<button class="btn btn-primary btn-lg" onclick="wizNext()">Continue →</button>':'<button class="btn btn-accent btn-lg" onclick="genQuote()">✦ Get my instant quote</button>'}</div>`);
+}
+function accessBlock(label,pre){return `<div style="border:1px solid var(--border);background:var(--surface-2);border-radius:12px;padding:14px"><div style="font-weight:700">${label}</div><div class="field" style="margin:10px 0 0"><label>Floor / level</label><select class="inp" id="w_${pre}floor">${[0,1,2,3,4,5].map(n=>`<option value="${n}" ${S[pre+'Floor']===n?'selected':''}>${n===0?'Ground / house':n+(n===1?'st':n===2?'nd':n===3?'rd':'th')+' floor'}</option>`).join('')}</select></div><label style="display:flex;gap:8px;align-items:center;margin-top:10px;cursor:pointer"><input type="checkbox" id="w_${pre}elev" ${S[pre+'Elev']?'checked':''}> <span style="font-size:14px;font-weight:600">Elevator available</span></label></div>`}
+function toggleAddon(id){S.addons=S.addons.includes(id)?S.addons.filter(a=>a!==id):[...S.addons,id];renderWizard()}
+function saveStep(){
+  if(S.step===0){S.from=$('w_from').value;S.to=$('w_to').value;S.oZip=$('w_ozip').value;S.dZip=$('w_dzip').value}
+  if(S.step===1){S.oFloor=+$('w_ofloor').value;S.dFloor=+$('w_dfloor').value;S.oElev=$('w_oelev').checked;S.dElev=$('w_delev').checked}
+  if(S.step===2){S.desc=$('w_desc').value}
+}
+function wizNext(){saveStep();if(S.step===0&&(S.from.trim().length<2||S.to.trim().length<2)){alert('Please enter both a pickup and destination.');return}S.step++;renderWizard()}
+function wizBack(){saveStep();S.step--;renderWizard()}
+function genQuote(){
+  saveStep();const a=analyze(S.homeSize,S.desc);a.spec=Math.max(a.spec,S.addons.includes('specialty')?1:0);S.analysis=a;S.dist=estDist(S.oZip,S.dZip);
+  S.breakdown=compute({vol:a.vol,laborHours:a.laborHours,crew:a.crew,dist:S.dist,oFloor:S.oFloor,dFloor:S.dFloor,oElev:S.oElev,dElev:S.dElev,addons:S.addons,spec:a.spec});
+  S.ref=ref('BBM-Q');renderResult();go('result');
+}
+
+/* ---------- result ---------- */
+function renderResult(){
+  $('resRef').innerHTML=`Quote <b style="font-family:var(--disp)">${S.ref}</b> · valid 14 days`;
+  $('resTiers').innerHTML=S.breakdown.tiers.map(t=>`<div class="card rtier ${t.reco?'reco':''}"><div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px"><div><div style="display:flex;gap:8px;align-items:center"><h3 style="color:var(--forest-800)">${t.name}</h3>${t.reco?'<span class="badge" style="background:var(--forest-600);color:#fff">Most popular</span>':''}</div><p class="muted" style="font-size:14px;margin-top:2px">${t.tag}</p></div><div style="text-align:right"><div class="amt" style="font-family:var(--disp);font-size:1.9rem;font-weight:800">${money(t.price)}</div><div class="muted" style="font-size:12px">${money(t.deposit)} deposit today</div></div></div><div class="grid g2" style="margin-top:14px;gap:8px">${t.inc.map(i=>`<div style="display:flex;gap:8px;font-size:14px;color:var(--secondary)">${CHK}<span>${i}</span></div>`).join('')}</div><button class="btn ${t.reco?'btn-primary':'btn-outline'} btn-block mt16" onclick="selectTier('${t.id}')">Select ${t.name} & schedule →</button></div>`).join('');
+  const a=S.analysis,hs=HOME_SIZES.find(h=>h.v===S.homeSize).l;
+  const sum=[['📍','From',S.from||'—'],['🚚','To',S.to||'—'],['🛣','Distance','~'+Math.round(S.dist)+' miles'],['🏠','Home',hs],['📦','Volume',Math.round(a.vol).toLocaleString()+' cu ft'],['⚖','Weight',Math.round(a.weight).toLocaleString()+' lbs'],['👥','Crew',a.crew+' movers'],['🕑','Time',a.laborHours+' hours']];
+  $('resSummary').innerHTML=`<h3 style="font-size:1.05rem">Move summary</h3><div class="mt16">${sum.map(r=>`<div class="sumrow"><span class="k">${r[0]} ${r[1]}</span><span class="v">${r[2]}</span></div>`).join('')}</div><div class="demo-note mt16">✦ ${a.spec?`We flagged ${a.spec} specialty item(s) for extra care. `:''}Estimate ${S.photos?'informed by '+S.photos+' photo(s) and ':''}built from your details.</div>`;
+  const b=S.breakdown;
+  $('resBreakdown').innerHTML=`<h3 style="font-size:1.05rem">How we priced it</h3><p class="muted" style="font-size:12px;margin-top:2px">Base move cost — service tiers build on this.</p><div class="mt16">${[...b.lineItems,...b.addonItems].map(l=>`<div class="line"><span><span class="lab">${l.lab}</span>${l.sm?`<span class="sm" style="display:block">${l.sm}</span>`:''}</span><span class="tnum" style="font-weight:600">${money(l.amt)}</span></div>`).join('')}<div class="line" style="border-top:1px solid var(--border);margin-top:6px;padding-top:10px;font-weight:800"><span>Base subtotal</span><span class="tnum">${money(b.baseSubtotal+b.addTot)}</span></div></div>`;
+}
+function selectTier(id){S.tier=id;buildAvailability();renderBooking();go('book')}
+
+/* ---------- booking ---------- */
+let DAYS=[];
+function buildAvailability(){DAYS=[];const now=new Date();const seed=s=>{let h=0;for(let i=0;i<s.length;i++)h=(h*31+s.charCodeAt(i))&0xffffffff;return Math.abs(h)};const W=['8:00 AM – 10:00 AM','10:00 AM – 12:00 PM','12:00 PM – 2:00 PM','2:00 PM – 4:00 PM'];
+  for(let i=1;i<=20;i++){const d=new Date(now.getTime()+i*864e5);if(d.getDay()===0)continue;const ymd=d.toISOString().slice(0,10);const sd=seed(ymd);
+    const slots=W.map((w,x)=>{const cap=2+((sd>>x)&1);const bk=(sd>>(x+3))%(cap+1);return{id:w,cap,booked:bk}});
+    DAYS.push({date:ymd,label:d.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'}),slots});}
+  const fd=DAYS.find(d=>d.slots.some(s=>s.booked<s.cap));if(fd){S.date=fd.date;S.slot=(fd.slots.find(s=>s.booked<s.cap)||{}).id}}
+function renderBooking(){
+  $('bookRef').textContent='Quote '+S.ref+' · pick a time, add your details, pay a small deposit.';
+  $('dayScroll').innerHTML=DAYS.slice(0,14).map(d=>{const full=d.slots.every(s=>s.booked>=s.cap);const p=d.label.split(' ');return `<button class="day ${d.date===S.date?'sel':''}" ${full?'disabled style=opacity:.35':''} onclick="pickDay('${d.date}')"><div class="dow">${p[0]}</div><div class="dn">${p[2]}</div><div class="mo">${p[1]}</div></button>`}).join('');
+  const day=DAYS.find(d=>d.date===S.date);
+  $('slotGrid').innerHTML=(day?day.slots:[]).map(s=>{const full=s.booked>=s.cap;return `<button class="slot ${s.id===S.slot?'sel':''} ${full?'full':''}" ${full?'disabled':''} onclick="S.slot='${s.id}';renderBooking()">${s.id.replace(' – ','–')}${full?'<div style=font-size:10px>Full</div>':''}</button>`}).join('');
+  const t=S.breakdown.tiers.find(x=>x.id===S.tier);const day2=DAYS.find(d=>d.date===S.date);
+  $('bookSummary').innerHTML=`<h3 style="font-size:1.05rem">Order summary</h3>
+    <div class="mt16" style="font-size:14px;color:var(--secondary)"><div class="sumrow"><span class="k">📍 From</span><span class="v">${S.from||'—'}</span></div><div class="sumrow"><span class="k">🚚 To</span><span class="v">${S.to||'—'}</span></div>${S.date?`<div class="sumrow"><span class="k">🕑 When</span><span class="v">${day2?day2.label:''} · ${S.slot}</span></div>`:''}</div>
+    <div class="mt16"><div class="muted" style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px">Service level</div>${S.breakdown.tiers.map(x=>`<button class="chip ${x.id===S.tier?'sel':''}" style="width:100%;display:flex;justify-content:space-between;align-items:center;margin-bottom:8px" onclick="S.tier='${x.id}';renderBooking()"><span class="t">${x.name}${x.reco?' ★':''}</span><span style="font-weight:800" class="tnum">${money(x.price)}</span></button>`).join('')}</div>
+    <div style="border-top:1px solid var(--border);margin-top:8px;padding-top:14px"><div class="dl"><span class="muted">Total move cost</span><span class="tnum" style="font-weight:600">${money(t.price)}</span></div><div class="dl" style="color:var(--forest-700)"><span style="font-weight:700">Deposit today</span><span class="tnum" style="font-weight:800">${money(t.deposit)}</span></div><div class="dl"><span class="muted">Balance on move day</span><span class="tnum" style="font-weight:600">${money(t.balance)}</span></div></div>
+    <button class="btn btn-accent btn-block btn-lg mt16" onclick="payNow()">Pay ${money(t.deposit)} & confirm →</button>
+    <p class="center muted mt8" style="font-size:12px">🛡 Refundable up to 48h before your move.</p>`;
+}
+function pickDay(d){S.date=d;const day=DAYS.find(x=>x.date===d);const s=day.slots.find(x=>x.booked<x.cap);S.slot=s?s.id:'';renderBooking()}
+function payNow(){
+  if(!S.date||!S.slot){alert('Please choose a date and arrival window.');return}
+  const t=S.breakdown.tiers.find(x=>x.id===S.tier);S.crew=CREWS[Math.floor(Math.random()*CREWS.length)];
+  S.booking={ref:ref('BBM-B'),tier:t,date:S.date,slot:S.slot,name:$('bkName').value,email:$('bkEmail').value,card:($('bkCard').value.replace(/\D/g,'').slice(-4))};
+  S.stageIdx=0;renderConfirm();go('confirm');
+}
+function renderConfirm(){
+  const b=S.booking,day=DAYS.find(d=>d.date===b.date);
+  $('confMsg').innerHTML=`Thanks, ${b.name.split(' ')[0]}! A confirmation is on its way. Your booking reference is <b style="font-family:var(--disp)">${b.ref}</b>.`;
+  $('confCard').innerHTML=`<div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px"><h3 style="font-size:1.1rem">Move details</h3><span class="badge badge-forest">${b.tier.name} service</span></div>
+    <div class="grid g2" style="margin-top:16px;gap:14px">${[['📅','Date',day?day.label:b.date],['🕑','Window',b.slot],['📍','Pickup',S.from||'—'],['🚚','Destination',S.to||'—'],['👥','Crew',S.crew.name+' · lead '+S.crew.lead],['✓','Status','Confirmed']].map(d=>`<div style="display:flex;gap:12px"><span style="width:38px;height:38px;border-radius:10px;background:var(--forest-50);color:var(--forest-600);display:grid;place-items:center">${d[0]}</span><div><div class="muted" style="font-size:12px">${d[1]}</div><div style="font-weight:600">${d[2]}</div></div></div>`).join('')}</div>
+    <div style="background:var(--surface-2);border-radius:12px;padding:16px;margin-top:16px"><div class="dl"><span class="muted">Total move cost</span><span class="tnum" style="font-weight:600">${money(b.tier.price)}</span></div><div class="dl" style="color:var(--forest-700)"><span style="font-weight:700">Deposit paid (•••• ${b.card})</span><span class="tnum" style="font-weight:800">${money(b.tier.deposit)}</span></div><div class="dl"><span class="muted">Balance on move day</span><span class="tnum" style="font-weight:600">${money(b.tier.balance)}</span></div></div>`;
+  renderTracking();
+}
+
+/* ---------- tracking ---------- */
+let routeLen=0;
+function renderTracking(){
+  const b=S.booking;
+  if(!b){$('trkTitle').textContent='Enter a booking reference';S.stageIdx=Math.max(S.stageIdx,4);S.crew=S.crew||CREWS[0];S.from=S.from||'18 Maple St, Asheville';S.to=S.to||'402 Ridgeline Dr, Weaverville';S.booking={ref:'BBM-B-DEMO',tier:compute({vol:900,laborHours:4.5,crew:3,dist:16,oFloor:1,dFloor:1,oElev:0,dElev:0,addons:[],spec:0}).tiers[1],date:new Date().toISOString().slice(0,10),slot:'8:00 AM – 10:00 AM'};S.dist=S.dist||16}
+  $('trkTitle').innerHTML='Tracking <span style="font-family:var(--disp)">'+S.booking.ref+'</span>';
+  const st=STAGES[S.stageIdx];const active=!['CONFIRMED','COMPLETED'].includes(st.s);
+  $('trkFrom').textContent=(S.from||'Pickup').split(',')[0];$('trkTo').textContent=(S.to||'Destination').split(',')[0];
+  $('trkLive').innerHTML=st.s==='COMPLETED'?'✅ Delivered':active?'<span class="pulse">◉</span> Live':'📅 Scheduled';
+  const eta=st.s==='EN_ROUTE'?'Arriving in ~22 min':st.s==='IN_TRANSIT'?'~14 min to destination':st.s==='COMPLETED'?'Completed':active?'In progress':'Scheduled';
+  $('trkEta').textContent=eta;
+  $('trkDist').textContent=Math.round(S.dist||16)+' mi';$('trkCrewN').textContent=(S.crew?S.crew.size:3)+' movers';$('trkProg').textContent=Math.round(st.p*100)+'%';
+  $('trkStageIc').textContent=st.ic;$('trkStageT').textContent=st.t;$('trkStageD').textContent=st.d;
+  $('advBtn').style.display=st.s==='COMPLETED'?'none':'';
+  const crew=S.crew||CREWS[0];
+  $('crewCard').innerHTML=`<h3 style="font-size:1.05rem">Your crew</h3><div style="display:flex;gap:12px;align-items:center;margin-top:12px"><span style="width:48px;height:48px;border-radius:999px;background:var(--honey-100);color:var(--honey-700);display:grid;place-items:center;font-weight:800">${crew.name.split(' ').map(w=>w[0]).join('')}</span><div><div style="font-weight:700">${crew.name}</div><div class="muted" style="font-size:14px">Lead: ${crew.lead} · ${crew.size} movers</div></div></div><a href="#" class="phone" style="margin-top:12px;display:inline-flex">📞 ${crew.phone}</a>`;
+  $('timeline').innerHTML='<div style="flex:1">'+STAGES.map((s,i)=>{const done=i<=S.stageIdx,cur=i===S.stageIdx&&st.s!=='COMPLETED';return `<div class="item ${done?'done':''} ${cur?'cur':''}"><div class="col"><span class="node">${s.ic}</span>${i<STAGES.length-1?'<span class="bar"></span>':''}</div><div class="body"><div style="font-weight:700;font-size:14px">${s.t}</div><div class="muted" style="font-size:12px">${done?(cur?'In progress':'Done'):'Upcoming'}</div></div></div>`}).join('')+'</div>';
+  // move truck
+  const route=$('route');if(route){routeLen=route.getTotalLength();const pt=route.getPointAtLength(st.p*routeLen);const tk=$('truck');tk.style.left=(pt.x/400*100)+'%';tk.style.top=(pt.y/300*100)+'%';tk.classList.toggle('animate',active);
+    const done=$('routeDone');done.style.strokeDasharray=routeLen;done.style.strokeDashoffset=routeLen*(1-st.p)}
+}
+function advance(){if(S.stageIdx<STAGES.length-1){S.stageIdx++;renderTracking()}}
+
+/* ---------- theme ---------- */
+function currentTheme(){return document.documentElement.getAttribute('data-theme')||(matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light')}
+function toggleTheme(){const t=currentTheme()==='dark'?'light':'dark';document.documentElement.setAttribute('data-theme',t);try{localStorage.setItem('bb-theme',t)}catch(e){}setThemeIcon(t)}
+function setThemeIcon(t){$('themeIcon').innerHTML=t==='dark'?'<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>':'<circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M1 12h2M21 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4"/>'}
+try{const sv=localStorage.getItem('bb-theme');if(sv){document.documentElement.setAttribute('data-theme',sv)}}catch(e){}
+setThemeIcon(currentTheme());
+
+/* ---------- init ---------- */
+renderHome();
+window.startQuote=startQuote;window.go=go;
+</script>
